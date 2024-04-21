@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grpc;
+
+option java_multiple_files = true;
+
+service DataStorage {
+  rpc uploadFile(UploadRequest) returns (FileContent);
+  rpc downloadFile(DownloadRequest) returns (stream FileContent);
+}
+
+message UploadRequest {
+  string fileName = 1;
+  string fileKey = 2;
+  bytes fileContent = 3;
+}
+
+message DownloadRequest {
+  string fileName = 1;
+  string fileKey = 2;
+}
+
+message FileContent {
+  string fileName = 1;
+  bytes fileContent = 2;
+  string status = 3;
+  string key = 4;
+}
