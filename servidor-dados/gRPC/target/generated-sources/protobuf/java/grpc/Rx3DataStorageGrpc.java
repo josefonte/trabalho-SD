@@ -35,8 +35,8 @@ public final class Rx3DataStorageGrpc {
             return new RxDataStorageStub(channel, callOptions);
         }
 
-        public io.reactivex.rxjava3.core.Single<grpc.FileContent> uploadFile(io.reactivex.rxjava3.core.Single<grpc.UploadRequest> rxRequest) {
-            return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(rxRequest,
+        public io.reactivex.rxjava3.core.Flowable<grpc.FileContent> uploadFile(io.reactivex.rxjava3.core.Single<grpc.UploadRequest> rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToMany(rxRequest,
                 new com.salesforce.reactivegrpc.common.BiConsumer<grpc.UploadRequest, io.grpc.stub.StreamObserver<grpc.FileContent>>() {
                     @java.lang.Override
                     public void accept(grpc.UploadRequest request, io.grpc.stub.StreamObserver<grpc.FileContent> observer) {
@@ -55,8 +55,8 @@ public final class Rx3DataStorageGrpc {
                 }, getCallOptions());
         }
 
-        public io.reactivex.rxjava3.core.Single<grpc.FileContent> uploadFile(grpc.UploadRequest rxRequest) {
-            return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(io.reactivex.rxjava3.core.Single.just(rxRequest),
+        public io.reactivex.rxjava3.core.Flowable<grpc.FileContent> uploadFile(grpc.UploadRequest rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToMany(io.reactivex.rxjava3.core.Single.just(rxRequest),
                 new com.salesforce.reactivegrpc.common.BiConsumer<grpc.UploadRequest, io.grpc.stub.StreamObserver<grpc.FileContent>>() {
                     @java.lang.Override
                     public void accept(grpc.UploadRequest request, io.grpc.stub.StreamObserver<grpc.FileContent> observer) {
@@ -79,11 +79,11 @@ public final class Rx3DataStorageGrpc {
 
     public static abstract class DataStorageImplBase implements io.grpc.BindableService {
 
-        public io.reactivex.rxjava3.core.Single<grpc.FileContent> uploadFile(grpc.UploadRequest request) {
+        public io.reactivex.rxjava3.core.Flowable<grpc.FileContent> uploadFile(grpc.UploadRequest request) {
             return uploadFile(io.reactivex.rxjava3.core.Single.just(request));
         }
 
-        public io.reactivex.rxjava3.core.Single<grpc.FileContent> uploadFile(io.reactivex.rxjava3.core.Single<grpc.UploadRequest> request) {
+        public io.reactivex.rxjava3.core.Flowable<grpc.FileContent> uploadFile(io.reactivex.rxjava3.core.Single<grpc.UploadRequest> request) {
             throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
         }
 
@@ -99,7 +99,7 @@ public final class Rx3DataStorageGrpc {
             return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
                     .addMethod(
                             grpc.DataStorageGrpc.getUploadFileMethod(),
-                            asyncUnaryCall(
+                            asyncServerStreamingCall(
                                     new MethodHandlers<
                                             grpc.UploadRequest,
                                             grpc.FileContent>(
@@ -145,11 +145,11 @@ public final class Rx3DataStorageGrpc {
         public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
             switch (methodId) {
                 case METHODID_UPLOAD_FILE:
-                    com.salesforce.rx3grpc.stub.ServerCalls.oneToOne((grpc.UploadRequest) request,
+                    com.salesforce.rx3grpc.stub.ServerCalls.oneToMany((grpc.UploadRequest) request,
                             (io.grpc.stub.StreamObserver<grpc.FileContent>) responseObserver,
-                            new com.salesforce.reactivegrpc.common.Function<grpc.UploadRequest, io.reactivex.rxjava3.core.Single<grpc.FileContent>>() {
+                            new com.salesforce.reactivegrpc.common.Function<grpc.UploadRequest, io.reactivex.rxjava3.core.Flowable<grpc.FileContent>>() {
                                 @java.lang.Override
-                                public io.reactivex.rxjava3.core.Single<grpc.FileContent> apply(grpc.UploadRequest single) {
+                                public io.reactivex.rxjava3.core.Flowable<grpc.FileContent> apply(grpc.UploadRequest single) {
                                     return serviceImpl.uploadFile(single);
                                 }
                             }, serviceImpl::onErrorMap);
