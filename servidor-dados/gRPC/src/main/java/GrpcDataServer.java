@@ -27,6 +27,7 @@ public class GrpcDataServer {
             BufferedWriter writer = new BufferedWriter(new FileWriter(OUTPUT));
             // Escreve uma string vazia para limpar o conteúdo do arquivo
             writer.write("");
+            writer.flush();
             // Fecha o fluxo de escrita
             writer.close();
 
@@ -71,7 +72,7 @@ public class GrpcDataServer {
     private class DataStorageImpl extends DataStorageGrpc.DataStorageImplBase {
         @Override
         public void uploadFile(UploadRequest request, StreamObserver<FileContent> responseObserver) {
-            int seg = 0;
+
             String fileKey = request.getFileKey();
             List<FileContent> fileList = fileMap.computeIfAbsent(fileKey, k -> new ArrayList<>());
             FileContent fileContent = FileContent.newBuilder()
@@ -82,12 +83,16 @@ public class GrpcDataServer {
                     .build();
 
 
+
             synchronized (fileList) {
                 fileList.add(fileContent); // Adiciona o conteúdo do arquivo à lista de arquivos
+                fileMap.put(fileKey,fileList);
                 // Aqui você pode escrever o conteúdo do arquivo em ordem para o sistema de arquivos
                 // Certifique-se de manipular exceções de E/S adequadamente
                 // Exemplo de escrita em um arquivo:
-                File outputFile = new File(OUTPUT);
+                System.out.println(fileContent.getFileName());
+                String src_directory = "src/test/lixo/";
+                File outputFile = new File(src_directory + fileContent.getFileName());
                 try (FileOutputStream fos = new FileOutputStream(outputFile, true)) {
                     if (!outputFile.exists()) {
                         // Se o arquivo não existe, cria um novo
@@ -109,6 +114,9 @@ public class GrpcDataServer {
 
         @Override
         public void downloadFile(DownloadRequest request, StreamObserver<FileContent> responseObserver) {
+            System.out.println("O FileMap está assim:");
+            fileMap.forEach((key,list)->
+                    System.out.println("Para a key "+key+" existem este ficheiros :\n"+list.listIterator().next().getFileContent().toStringUtf8()));
             String fileKey = request.getFileKey();
             List<FileContent> fileList = fileMap.get(fileKey);
             if (fileList != null) {

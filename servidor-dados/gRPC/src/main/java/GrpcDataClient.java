@@ -86,7 +86,6 @@ public class GrpcDataClient {
                     uploadCompleteLatch.countDown();
                 }
             };
-            int seg=0;
             /*
             while ((bytesRead = fis.read(buffer)) != -1) {
 
@@ -134,16 +133,22 @@ public class GrpcDataClient {
                 .setFileKey(key)
                 .build();
 
+        // CountDownLatch para aguardar a conclusão do upload
+        CountDownLatch uploadCompleteLatch = new CountDownLatch(1);
+
         StreamObserver<FileContent> responseObserver = new StreamObserver<FileContent>() {
+
             FileOutputStream outputStream = null;
             long fileSize = 0;
             long currentPosition = 0;
 
             @Override
             public void onNext(FileContent value) {
+                System.out.println("aqui: ");
                 try {
                     if (outputStream == null) {
                         File file = new File(saveDirectory, fileName);
+                        System.out.println(String.format("File file = new File(saveDirectory, fileName); %s",file));
                         outputStream = new FileOutputStream(file, true); // Append mode
                         fileSize = file.length();
                     }
@@ -161,8 +166,10 @@ public class GrpcDataClient {
 
             @Override
             public void onError(Throwable t) {
+
                 System.out.println("Error during file download: " + t.getMessage());
                 try {
+                    uploadCompleteLatch.countDown();
                     if (outputStream != null) {
                         outputStream.close();
                     }
@@ -173,11 +180,14 @@ public class GrpcDataClient {
 
             @Override
             public void onCompleted() {
+
                 try {
+                    uploadCompleteLatch.countDown();
                     if (outputStream != null) {
                         outputStream.close();
                     }
                     System.out.println("Download completed successfully.");
+
                 } catch (IOException e) {
                     onError(e);
                 }
@@ -185,5 +195,13 @@ public class GrpcDataClient {
         };
 
         stub.downloadFile(request, responseObserver);
+
+        // Aguarda a conclusão do upload antes de retornar
+        try {
+            uploadCompleteLatch.await();
+        } catch (InterruptedException e) {
+            System.out.println("Thread interrupted while waiting for upload completion.");
+            Thread.currentThread().interrupt();
+        }
     }
 }
