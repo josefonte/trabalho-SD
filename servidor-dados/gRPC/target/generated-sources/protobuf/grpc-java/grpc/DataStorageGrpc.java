@@ -22,7 +22,7 @@ public final class DataStorageGrpc {
       fullMethodName = SERVICE_NAME + '/' + "uploadFile",
       requestType = grpc.UploadRequest.class,
       responseType = grpc.FileContent.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<grpc.UploadRequest,
       grpc.FileContent> getUploadFileMethod() {
     io.grpc.MethodDescriptor<grpc.UploadRequest, grpc.FileContent> getUploadFileMethod;
@@ -31,7 +31,7 @@ public final class DataStorageGrpc {
         if ((getUploadFileMethod = DataStorageGrpc.getUploadFileMethod) == null) {
           DataStorageGrpc.getUploadFileMethod = getUploadFileMethod =
               io.grpc.MethodDescriptor.<grpc.UploadRequest, grpc.FileContent>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "uploadFile"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -171,7 +171,7 @@ public final class DataStorageGrpc {
      */
     public void uploadFile(grpc.UploadRequest request,
         io.grpc.stub.StreamObserver<grpc.FileContent> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getUploadFileMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -202,8 +202,9 @@ public final class DataStorageGrpc {
 
     /**
      */
-    public grpc.FileContent uploadFile(grpc.UploadRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+    public java.util.Iterator<grpc.FileContent> uploadFile(
+        grpc.UploadRequest request) {
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getUploadFileMethod(), getCallOptions(), request);
     }
 
@@ -230,14 +231,6 @@ public final class DataStorageGrpc {
     protected DataStorageFutureStub build(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new DataStorageFutureStub(channel, callOptions);
-    }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<grpc.FileContent> uploadFile(
-        grpc.UploadRequest request) {
-      return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getUploadFileMethod(), getCallOptions()), request);
     }
   }
 
@@ -289,7 +282,7 @@ public final class DataStorageGrpc {
     return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
         .addMethod(
           getUploadFileMethod(),
-          io.grpc.stub.ServerCalls.asyncUnaryCall(
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
             new MethodHandlers<
               grpc.UploadRequest,
               grpc.FileContent>(

@@ -44,11 +44,11 @@ public final class Grpc {
       "ntent\030\003 \001(\014\"4\n\017DownloadRequest\022\020\n\010fileNa" +
       "me\030\001 \001(\t\022\017\n\007fileKey\030\002 \001(\t\"Q\n\013FileContent" +
       "\022\020\n\010fileName\030\001 \001(\t\022\023\n\013fileContent\030\002 \001(\014\022" +
-      "\016\n\006status\030\003 \001(\t\022\013\n\003key\030\004 \001(\t2\177\n\013DataStor" +
-      "age\0224\n\nuploadFile\022\023.grpc.UploadRequest\032\021" +
-      ".grpc.FileContent\022:\n\014downloadFile\022\025.grpc" +
-      ".DownloadRequest\032\021.grpc.FileContent0\001B\002P" +
-      "\001b\006proto3"
+      "\016\n\006status\030\003 \001(\t\022\013\n\003key\030\004 \001(\t2\201\001\n\013DataSto" +
+      "rage\0226\n\nuploadFile\022\023.grpc.UploadRequest\032" +
+      "\021.grpc.FileContent0\001\022:\n\014downloadFile\022\025.g" +
+      "rpc.DownloadRequest\032\021.grpc.FileContent0\001" +
+      "B\002P\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
