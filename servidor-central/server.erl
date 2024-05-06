@@ -6,7 +6,6 @@
 
 start(Port) -> register(?MODULE, spawn(fun() -> server(Port) end)).
 
-stop(Port) -> gen_tcp:close(Port).
 
 server(Port) ->
     Result = gen_tcp:listen(Port, [binary, {packet, line}]),
@@ -16,10 +15,13 @@ server(Port) ->
             file_manager:start(),
             login_manager:start(),
             acceptor(ListenSocket);
-
+        
         {error, _} ->
+            stop(Port),
             io:fwrite("Error starting server!\n")
     end.
+
+stop(Port) -> gen_tcp:close(Port).
 
 
 acceptor(ListenSocket) ->
@@ -55,6 +57,7 @@ userAuth(Socket,User) ->
         {_, _, Data} ->
             CleanedData = re:replace(Data, "\\n|\\r", "", [global,{return,list}]),
             Info = string:split(CleanedData, ",", all),
+            io:format("Info: ~p~n", [Info]),
             case Info of
                 ["create_account", Username, Passwd] ->
                     login_manager ! {{create_account, Username, Passwd}, self()},
@@ -89,8 +92,8 @@ userAuth(Socket,User) ->
                             userAuth(Socket,User)
                     end;
 
-                ["logout", Username] ->
-                    login_manager ! {{logout, Username}, self()},
+                ["logout"] ->
+                    login_manager ! {{logout, User}, self()},
                     receive
                         {ok, _} ->
                             gen_tcp:send(Socket, "Logged out\n"),
@@ -125,6 +128,14 @@ userAuth(Socket,User) ->
                                 {ok, _} -> ok;
                                 _ -> gen_tcp:send(Socket, "Error creating album\n")
                             end
+                    end,
+                    userAuth(Socket,User);
+                ["check_user", Album] ->
+                    case verifyUser(Album,User) of
+                        false ->
+                            gen_tcp:send(Socket, "You must be a user of the album to edit it\n");
+                        true ->
+                            gen_tcp:send(Socket,"OK\n")
                     end,
                     userAuth(Socket,User);
                 ["add_file", Album,File,Descricao] ->
@@ -172,6 +183,20 @@ userAuth(Socket,User) ->
                                     gen_tcp:send(Socket, "File not found\n");
                                 {album_not_found, _} ->
                                     gen_tcp:send(Socket, "Album not found\n")
+                            end
+                    end,
+                    userAuth(Socket,User);
+                ["get_album",Album] ->
+                    case verifyUser(Album,User) of
+                        false ->
+                            gen_tcp:send(Socket,{error, "You must be a user of the album to get its content\n"});
+                        true ->
+                            file_manager ! {{get_album, Album}, self()},
+                            receive
+                                {ok, Info} ->
+                                    gen_tcp:send(Socket, {ok,Info});
+                                {album_not_found, _} ->
+                                    gen_tcp:send(Socket, {error,"Album not found\n"})
                             end
                     end,
                     userAuth(Socket,User);

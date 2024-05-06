@@ -38,6 +38,15 @@ loop(Map) ->
                     From ! {album_exists, ?MODULE},
                     loop(Map)
             end;
+        {{get_album,Album},From} ->
+            case maps:find(Album,Map) of
+                error ->
+                    From ! {album_not_found, ?MODULE},
+                    loop(Map);
+                {ok,Files} ->
+                    From ! {ok, Files},
+                    loop(Map)
+            end;
         {{add_file,Album, Name,Descricao},From} ->
             % ir buscar map daquele album
             case maps:find(Album,Map) of
