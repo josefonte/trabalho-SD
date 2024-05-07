@@ -15,7 +15,7 @@ server(Port) ->
             file_manager:start(),
             login_manager:start(),
             acceptor(ListenSocket);
-        
+
         {error, _} ->
             stop(Port),
             io:fwrite("Error starting server!\n")
@@ -50,6 +50,12 @@ verifyUser(Album,User) ->
         _ -> false
     end.
 
+userExists(Username) ->
+    login_manager ! {{verify_user, Username}, self()},
+    receive
+        {ok, _} -> true;
+        _ -> false
+    end.
 
 
 userAuth(Socket,User) ->
@@ -103,7 +109,7 @@ userAuth(Socket,User) ->
                             userAuth(Socket,User)
 
                     end;
-                    
+
                 ["online"] ->
                     login_manager ! {online, self()},
                     receive
@@ -111,6 +117,7 @@ userAuth(Socket,User) ->
                             gen_tcp:send(Socket, "Online users: " ++ string:join(OnlineUsers, ", ") ++ "\n")
                     end,
                     userAuth(Socket,User);
+
                 ["create_album",Album] ->
                     case User of
                         "" ->
@@ -130,6 +137,7 @@ userAuth(Socket,User) ->
                             end
                     end,
                     userAuth(Socket,User);
+
                 ["check_user", Album] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -138,6 +146,7 @@ userAuth(Socket,User) ->
                             gen_tcp:send(Socket,"OK\n")
                     end,
                     userAuth(Socket,User);
+
                 ["add_file", Album,File,Descricao] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -154,6 +163,7 @@ userAuth(Socket,User) ->
                             end
                     end,
                     userAuth(Socket,User);
+
                 ["remove_file",Album,File] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -170,6 +180,7 @@ userAuth(Socket,User) ->
                             end
                     end,
                     userAuth(Socket,User);
+
                 ["rate_file",Album,File,Rate] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -186,6 +197,7 @@ userAuth(Socket,User) ->
                             end
                     end,
                     userAuth(Socket,User);
+
                 ["get_album",Album] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -200,42 +212,55 @@ userAuth(Socket,User) ->
                             end
                     end,
                     userAuth(Socket,User);
-                ["add_user", Album,Username] ->
+
+                ["add_user", Album, Username] ->
                     case verifyUser(Album,User) of
                         false ->
                             gen_tcp:send(Socket, "You must be a user of the album to add a user\n");
                         true ->
-                            user_manager ! {{add_user, Album, Username}, self()},
-                            receive
-                                {ok, _} ->
-                                    gen_tcp:send(Socket, "User added\n");
-                                {username_exists, _} ->
-                                    gen_tcp:send(Socket, "Username already exists in album\n");
-                                {album_not_found, _} ->
-                                    gen_tcp:send(Socket, "Album not found\n")
+                            case userExists(Username) of
+                                false ->
+                                    gen_tcp:send(Socket, "You must enter a valid username to add the user to the album\n");
+                                true ->
+                                    user_manager ! {{add_user, Album, Username}, self()},
+                                    receive
+                                        {ok, _} ->
+                                            gen_tcp:send(Socket, "User added\n");
+                                        {username_exists, _} ->
+                                            gen_tcp:send(Socket, "Username already exists in album\n");
+                                        {album_not_found, _} ->
+                                            gen_tcp:send(Socket, "Album not found\n")
+                                    end
                             end
                     end,
                     userAuth(Socket,User);
+
                 ["remove_user", Album,Username] ->
                     case verifyUser(Album,User) of
                         false ->
                             gen_tcp:send(Socket, "You must be a user of the album to remove a user\n");
                         true ->
-                            user_manager ! {{remove_user, Album, Username}, self()},
-                            receive
-                                {ok, _} ->
-                                    gen_tcp:send(Socket, "User removed\n");
-                                {username_not_found, _} ->
-                                    gen_tcp:send(Socket, "Username not found in album\n");
-                                {album_not_found, _} ->
-                                    gen_tcp:send(Socket, "Album not found\n")
+                            case User == Username of
+                                true ->
+                                    gen_tcp:send(Socket, "You cannot remove yourself from the album\n");
+                                false ->
+                                    user_manager ! {{remove_user, Album, Username}, self()},
+                                    receive
+                                        {ok, _} ->
+                                            gen_tcp:send(Socket, "User removed\n");
+                                        {username_not_found, _} ->
+                                            gen_tcp:send(Socket, "Username not found in album\n");
+                                        {album_not_found, _} ->
+                                            gen_tcp:send(Socket, "Album not found\n")
+                                    end
                             end
                     end,
                     userAuth(Socket,User);
+
                 ["exit"] ->
                     gen_tcp:send(Socket, "Goodbye\n"),
                     gen_tcp:close(Socket);
-                
+
                 _ ->
                     gen_tcp:send(Socket, "Invalid command\n"),
                     userAuth(Socket,User)

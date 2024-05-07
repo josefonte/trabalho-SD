@@ -64,7 +64,15 @@ handle({logout, Username}, _, Users) ->
 handle(online, _, Users) ->
     OnlineUsers = maps:filter(fun(_, {_, _, true}) -> true; (_, _) -> false end, Users),
     OnlineUsernames = maps:keys(OnlineUsers),
-    {OnlineUsernames, Users}.
+    {OnlineUsernames, Users};
+
+handle({verify_user, Username}, _, Users) ->
+    case maps:find(Username, Users) of
+        {ok, _} ->
+            {ok, Users};
+        _ ->
+            {invalid, Users}
+    end.
 
 
 isUserOnline(Username, Users) ->

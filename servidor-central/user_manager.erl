@@ -26,11 +26,11 @@ remove_user(Album,Username) -> rpc({remove_user,Album,Username}).
 
 
 %processo servidor
-loop(Map) -> 
+loop(Map) ->
     receive
         {{create_album,Album,Username},From} ->
             case maps:find(Album,Map) of
-                error -> 
+                error ->
                     From ! {ok, ?MODULE},
                     NewSet = sets:from_list([Username]),
                     loop(maps:put(Album,NewSet,Map));
@@ -55,7 +55,7 @@ loop(Map) ->
             end;
         {{add_user,Album, Username},From} ->
             case maps:find(Album,Map) of
-                error -> 
+                error ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map);
                 {ok,Users} ->
@@ -85,5 +85,5 @@ loop(Map) ->
                    From ! {album_not_found, ?MODULE},
                    loop(Map)
             end
-  
+
     end.
