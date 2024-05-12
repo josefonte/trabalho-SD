@@ -164,82 +164,77 @@ public class Client {
         return 0;
     }
 
-    private static Boolean canBeDelivered(Long pid, HashMap<Long, Integer> vv, HashMap<Long, Integer> vvm){
+    private static Boolean canBeDelivered(Long pid, VersionVector vv, VersionVector vvm){
         if (vv.getOrDefault(pid,0)+1 == vvm.getOrDefault(pid,0)){
             for (HashMap.Entry<Long, Integer> entry : vvm.entrySet()) {
-                if (entry.getKey() != pid) {
+                if (!entry.getKey().equals(pid)) {
                     if (entry.getValue() > vv.getOrDefault((entry.getKey()),0)) {
                         return false;
                     }
                 }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
-    private static void handle_chat(String[] parts,HashMap<Long, Integer> selfVV,
+    private static void checkMessagesPending(ArrayList<String> pending_messages, ArrayList<Long> pending_pids,
+                                             ArrayList<VersionVector> pending_vv, VersionVector selfVV){
+        boolean flag = true;
+        while (flag && pending_messages.size() > 0){
+            flag = false;
+            for (int i = 0; i < pending_messages.size(); i++){
+                String message = pending_messages.get(i);
+                Long id = pending_pids.get(i);
+                VersionVector vv = pending_vv.get(i);
+                if (canBeDelivered(id,selfVV,vv)){
+                    selfVV.put(id,selfVV.getOrDefault(id,0)+1);
+                    System.out.println("Received: " + message);
+                    pending_messages.remove(i);
+                    pending_pids.remove(i);
+                    pending_vv.remove(i);
+                    flag = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    private static void handle_chat(String[] parts,VersionVector selfVV,
                                       ArrayList<String> pending_messages, ArrayList<Long> pending_pids,
-                                      ArrayList<HashMap<Long,Integer>> pending_vv, Long mypid) {
-        // my message can either be of this format: album:chat:id,n:message
-        // or this format: album:command:message
+                                      ArrayList<VersionVector> pending_vv, Long mypid) {
+
         String[] chat_parts = parts[2].split(";");
         Long id = Long.parseLong(chat_parts[0]);
         if (id.equals(mypid)){
             return;
         }
-        HashMap vv = deserializeVersionVector(chat_parts[1]);
-        System.out.println("Received this vv: " + vv);
-        System.out.println("Current vv: " + selfVV);
+        VersionVector vv = VersionVector.deserializeVersionVector(chat_parts[1]);
 
         String message = parts[3];
-        //if it is the first message, and the selfVV is empty, then we can deliver it and the selfVV isequal to vv
-        if (selfVV.isEmpty()){
+        if (selfVV.firstMessage){
             selfVV.putAll(vv);
             System.out.println("Received: " + message);
+            selfVV.firstMessage = false;
         }
         else{
-        if (canBeDelivered(id,selfVV,vv)){
-            selfVV.put(id,selfVV.getOrDefault(id,0)+1);
-            System.out.println("Received: " + message);
-            for (int i = 0; i < pending_messages.size(); i++) {
-                if (canBeDelivered(pending_pids.get(i),selfVV,pending_vv.get(i))){
-                    System.out.println("Received: " + pending_messages.get(i));
-                    pending_messages.remove(i);
-                    pending_pids.remove(i);
-                    pending_vv.remove(i);
-                }
+            if (canBeDelivered(id,selfVV,vv)){
+                selfVV.put(id,selfVV.getOrDefault(id,0)+1);
+                System.out.println("Received: " + message);
+                checkMessagesPending(pending_messages,pending_pids,pending_vv,selfVV);
+            }
+            else{
+                pending_messages.add(message);
+                pending_pids.add(id);
+                pending_vv.add(vv);
             }
         }
-        else{
-            pending_messages.add(message);
-            pending_pids.add(id);
-            pending_vv.add(vv);
-        }}
 
     }
 
 
-    // Helper method to serialize version vector to string
-    private static String serializeVersionVector(HashMap<Long, Integer> versionVector) {
-        StringBuilder sb = new StringBuilder();
-        for (HashMap.Entry<Long, Integer> entry : versionVector.entrySet()) {
-            sb.append(entry.getKey()).append("=").append(entry.getValue()).append(",");
-        }
-        return sb.toString();
-    }
 
 
-    private static HashMap<Long, Integer> deserializeVersionVector(String vvString) {
-        HashMap<Long, Integer> versionVector = new HashMap<>();
-        String[] entries = vvString.split(",");
-        for (String entry : entries) {
-            String[] parts = entry.split("=");
-            long pid = Long.parseLong(parts[0]);
-            int seqNum = Integer.parseInt(parts[1]);
-            versionVector.put(pid, seqNum);
-        }
-        return versionVector;
-    }
 
 
     private static void chat(String album) throws IOException {
@@ -247,7 +242,7 @@ public class Client {
             // falta garantir entrega causal no serviço de chat dentro de cada grupo de edição
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             ZMQ.Socket publisher = context.createSocket(SocketType.PUB);
-            HashMap<Long, Integer> versionVector = new HashMap<>();
+            VersionVector versionVector = new VersionVector();
             long pid = ProcessHandle.current().pid();
             subscriber.connect("tcp://localhost:" + 5556);
             subscriber.subscribe(album.getBytes());
@@ -257,7 +252,7 @@ public class Client {
             // Start a thread to handle incoming messages
             new Thread(() -> {
                 try{
-                    ArrayList<HashMap<Long,Integer>> pending_vv = new ArrayList<>();
+                    ArrayList<VersionVector> pending_vv = new ArrayList<>();
                     ArrayList<Long> pending_pids = new ArrayList<>();
                     ArrayList<String> pending_messages = new ArrayList<>();
                     while (!Thread.currentThread().isInterrupted()) {
@@ -285,7 +280,7 @@ public class Client {
                 if (!command.startsWith("\\")){
                     int newSeqNum = versionVector.getOrDefault(pid,0) + 1;
                     versionVector.put(pid, newSeqNum);
-                    String vv = serializeVersionVector(versionVector);
+                    String vv = versionVector.serializeVersionVector();
                     String new_message = String.format("%s:chat:%s;%s:%s", album, pid,vv,command);
                     publisher.send(new_message.getBytes());
                 }
