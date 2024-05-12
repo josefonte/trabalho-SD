@@ -15,6 +15,7 @@ public class Client {
     private static PrintWriter out;
     private static BufferedReader in;
 
+    private static String User = null;
 
 
 
@@ -89,6 +90,7 @@ public class Client {
         out.println("login," + username + "," + password);
         String response = in.readLine();
         if (response.equals("Logged in")) {
+            User = username;
             System.out.println("Authentication successful.");
             return 0;
         } else {
@@ -143,6 +145,7 @@ public class Client {
         out.println("logout");
         String response = in.readLine();
         if (response.equals("Logged out")) {
+            User = null;
             System.out.println("Logged out successfully.");
             return 0;
         } else {
@@ -163,6 +166,9 @@ public class Client {
         }
         return 0;
     }
+
+
+
 
     private static Boolean canBeDelivered(Long pid, VersionVector vv, VersionVector vvm){
         if (vv.getOrDefault(pid,0)+1 == vvm.getOrDefault(pid,0)){
@@ -237,13 +243,25 @@ public class Client {
 
 
 
-    private static void chat(String album) throws IOException {
+    private static void chat(String album) {
         try (ZContext context = new ZContext()) {
             // falta garantir entrega causal no serviço de chat dentro de cada grupo de edição
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             ZMQ.Socket publisher = context.createSocket(SocketType.PUB);
-            VersionVector versionVector = new VersionVector();
+
             long pid = ProcessHandle.current().pid();
+
+            // estado do chat
+            VersionVector versionVector = new VersionVector();
+
+            // estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores
+            ORSetCRDT utilizadores = new ORSetCRDT();
+            ORSetCRDT ficheiros = new ORSetCRDT();
+
+
+
+
+
             subscriber.connect("tcp://localhost:" + 5556);
             subscriber.subscribe(album.getBytes());
 
@@ -261,12 +279,21 @@ public class Client {
                     // or this format: album:command:message
                     String[] parts = receivedMessage.split(":");
                     String type = parts[1];
-                    String message;
                     if (type.equals("chat")) {
                         handle_chat(parts,versionVector,pending_messages,pending_pids,pending_vv,pid);
                     } else {
-                        message = parts[2];
-                        System.out.println("Received: " + message);
+                        String mpid = parts[2];
+                        if (mpid.equals(Long.toString(pid))){
+                            continue;
+                        }
+                        if (parts[3].equals("users")){
+                            ORSetCRDT utilizadores_m = ORSetCRDT.deserialize(parts[4]);
+                            utilizadores.merge(utilizadores_m);
+                        }
+                        else if (parts[3].equals("files")){
+                            ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
+                            ficheiros.merge(ficheiros_m);
+                        }
                     }
 
                 }}
@@ -276,6 +303,9 @@ public class Client {
             }).start();
 
             String command = reader.readLine();
+            String message;
+            String crdt_name;
+            String crdt;
             while (!command.startsWith("\\exit")){
                 if (!command.startsWith("\\")){
                     int newSeqNum = versionVector.getOrDefault(pid,0) + 1;
@@ -288,30 +318,43 @@ public class Client {
                     if (command.startsWith("\\add_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
-                        String content = parts[2];
-                    out.println("add_file," + album + "," + file_name + "," + content);
+                        message = "add_file," + album + "," + file_name;
+                        crdt_name = "files";
+                        crdt = ficheiros.serialize();
                     } else if (command.startsWith("\\remove_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
-                        out.println("remove_file," + album + "," + file_name);
+                        message = "remove_file," + album + "," + file_name;
+                        crdt_name = "files";
+                        crdt = ficheiros.serialize();
                     } else if (command.startsWith("\\rate_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
                         String rating = parts[2];
-                        out.println("rate_file," + album + "," + file_name + "," + rating);
+                        message = "rate_file," + album + "," + file_name + "," + rating;
+                        crdt_name = "rates";
+                        crdt = "";
                     } else if (command.startsWith("\\add_user")) {
                         String[] parts = command.split(" ");
                         String username = parts[1];
-                        out.println("add_user," + album + "," + username);
+                        message = "add_user," + album + "," + username;
+                        crdt_name = "users";
+                        crdt = utilizadores.serialize();
                     } else if (command.startsWith("\\remove_user")) {
                         String[] parts = command.split(" ");
                         String username = parts[1];
-                        out.println("remove_user," + album + "," + username);
+                        message = "remove_user," + album + "," + username;
+                        crdt_name = "users";
+                        crdt = utilizadores.serialize();
                     }
-                    String response = album +":command: Response - " + in.readLine();
-                    String request = album + ":command: Operation sent - " + command;
-                    publisher.send(request.getBytes());
-                    publisher.send(response.getBytes());
+                    else {
+                        continue;
+                    }
+                    String new_message = String.format("%s:command:%s:%s:%s", album, pid, crdt_name,crdt);
+                    publisher.send(new_message.getBytes());
+                    out.println(message);
+                    String response = in.readLine();
+                    System.out.println(response); // DEBUG
 
             }
                 command = reader.readLine();

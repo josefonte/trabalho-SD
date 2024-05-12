@@ -3,6 +3,21 @@ import java.util.HashMap;
 public class VersionVector extends HashMap<Long, Integer> {
 
     public boolean firstMessage = true;
+
+    public void update(VersionVector other) {
+        for (HashMap.Entry<Long, Integer> entry : other.entrySet()) {
+            long pid = entry.getKey();
+            int seqNum = entry.getValue();
+            if (this.containsKey(pid)) {
+                int currentSeqNum = this.get(pid);
+                if (seqNum > currentSeqNum) {
+                    this.put(pid, seqNum);
+                }
+            } else {
+                this.put(pid, seqNum);
+            }
+        }
+    }
     public String serializeVersionVector() {
         StringBuilder sb = new StringBuilder();
         for (HashMap.Entry<Long, Integer> entry : this.entrySet()) {
