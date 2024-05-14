@@ -40,11 +40,31 @@ loop(Map) ->
             end;
         {{get_album,Album},From} ->
             case maps:find(Album,Map) of
+                {ok,Files} ->
+                    From ! {ok, Files,?MODULE},
+                    loop(Map);
+                _ ->
+                    From ! {album_not_found, ?MODULE},
+                    loop(Map)
+            end;
+        {{get_files,Album},From} ->
+            case maps:find(Album,Map) of
                 error ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map);
                 {ok,Files} ->
-                    From ! {ok, Files},
+                    NewFiles = maps:fold(
+                        fun(Name, Rates, Acc) ->
+                            Average = case maps:size(Rates) of
+                                0 -> 0; % Return 0 if Rates is empty
+                                _ -> lists:sum(maps:values(Rates))/maps:size(Rates)
+                            end,
+                            maps:put(Name, Average, Acc)
+                        end,
+                        #{},
+                        Files
+                    ),
+                    From ! {ok, NewFiles, ?MODULE},
                     loop(Map)
             end;
         {{add_file,Album, Name},From} ->
@@ -83,27 +103,34 @@ loop(Map) ->
                         end
             end;
         {{rate_file,Album, Name,Rate,Username},From} ->
-            case maps:find(Album, Map) of
-                error ->
-                    From ! {album_not_found, ?MODULE},
+            case string:to_integer(Rate) of
+                {error, _} ->
+                    % Conversion failed, Reason contains the error reason
+                    From ! {number_format_error, ?MODULE},
                     loop(Map);
-                {ok, Files} ->
-                    case maps:find(Name, Files) of
-                        {ok, Rates} ->
-                            case maps:find(Username, Rates) of
-                                false ->
-                                    NewRates = maps:put(Username, Rate, Rates),
-                                    NewFiles = maps:put(Name,  NewRates, Files),
-                                    NewMap = maps:put(Album, NewFiles, Map),
-                                    From ! {ok, ?MODULE},
-                                    loop(NewMap);
+                {RateInt, _} ->
+                    case maps:find(Album, Map) of
+                        error ->
+                            From ! {album_not_found, ?MODULE},
+                            loop(Map);
+                        {ok, Files} ->
+                            case maps:find(Name, Files) of
+                                {ok, Rates} ->
+                                    case maps:find(Username, Rates) of
+                                        error ->
+                                            NewRates = maps:put(Username, RateInt, Rates),
+                                            NewFiles = maps:put(Name,  NewRates, Files),
+                                            NewMap = maps:put(Album, NewFiles, Map),
+                                            From ! {ok, ?MODULE},
+                                            loop(NewMap);
+                                        _ ->
+                                            From ! {file_already_rated, ?MODULE},
+                                            loop(Map)
+                                    end;
                                 _ ->
-                                    From ! {file_already_rated, ?MODULE},
+                                    From ! {file_not_found, ?MODULE},
                                     loop(Map)
-                            end;
-                        _ ->
-                            From ! {file_not_found, ?MODULE},
-                            loop(Map)
+                            end
                     end
-            end
+            end          
     end.

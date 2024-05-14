@@ -146,6 +146,21 @@ userAuth(Socket,User) ->
                             gen_tcp:send(Socket,"OK\n")
                     end,
                     userAuth(Socket,User);
+                ["get_files", Album] ->
+                    case verifyUser(Album,User) of
+                        false ->
+                            gen_tcp:send(Socket, "You must be a user of the album to get its content\n");
+                        true ->
+                            file_manager ! {{get_files, Album}, self()},
+                            receive
+                                {ok, Files_Info,file_manager} ->
+                                    R = io_lib:format("~p\n", [Files_Info]),
+                                    gen_tcp:send(Socket, R);
+                                {album_not_found, _} ->
+                                    gen_tcp:send(Socket, "Album not found\n")
+                            end
+                    end,
+                    userAuth(Socket,User);
 
                 ["add_file", Album,File] ->
                     case verifyUser(Album,User) of
@@ -188,14 +203,16 @@ userAuth(Socket,User) ->
                         true ->
                             file_manager ! {{rate_file, Album, File, Rate,User}, self()},
                             receive
-                                {ok, _} ->
+                                {ok, file_manager} ->
                                     gen_tcp:send(Socket, "File rated\n");
-                                {file_not_found, _} ->
+                                {file_not_found, file_manager} ->
                                     gen_tcp:send(Socket, "File not found\n");
-                                {album_not_found, _} ->
+                                {album_not_found, file_manager} ->
                                     gen_tcp:send(Socket, "Album not found\n");
-                                {file_already_rated, _} ->
-                                    gen_tcp:send(Socket, "File already rated\n")
+                                {file_already_rated, file_manager} ->
+                                    gen_tcp:send(Socket, "File already rated\n");
+                                {number_format_error, file_manager} ->
+                                    gen_tcp:send(Socket, "Rate must be a number\n")
                             end
                     end,
                     userAuth(Socket,User);
@@ -203,14 +220,15 @@ userAuth(Socket,User) ->
                 ["get_album",Album] ->
                     case verifyUser(Album,User) of
                         false ->
-                            gen_tcp:send(Socket,{error, "You must be a user of the album to get its content\n"});
+                            gen_tcp:send(Socket,"You must be a user of the album to get its content\n");
                         true ->
                             file_manager ! {{get_album, Album}, self()},
                             receive
-                                {ok, Info} ->
-                                    gen_tcp:send(Socket, {ok,Info});
+                                {ok, Album_Info,file_manager} ->
+                                    R = io_lib:format("~p\n", [Album_Info]),
+                                    gen_tcp:send(Socket, R);
                                 {album_not_found, _} ->
-                                    gen_tcp:send(Socket, {error,"Album not found\n"})
+                                    gen_tcp:send(Socket, "Album not found\n")
                             end
                     end,
                     userAuth(Socket,User);

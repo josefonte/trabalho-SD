@@ -114,8 +114,9 @@ public class Client {
                 System.out.println("Select an option:");
                 System.out.println("1. Create Album");
                 System.out.println("2. Edit Album");
-                System.out.println("3. Request Album Content");
-                System.out.println("4. Exit");
+                System.out.println("3. Request Album Metadata");
+                System.out.println("4. Request File Data");
+                System.out.println("5. Exit");
                 int choice;
                 try {
                     choice = Integer.parseInt(reader.readLine());
@@ -135,6 +136,8 @@ public class Client {
                         request_album_content();
                         break;
                     case 4:
+                        request_file_data();
+                    case 5:
                         int result = logout();
                         if (result == 0){
                             System.out.println("Exiting...");
@@ -440,7 +443,21 @@ public class Client {
         return 1;
     }
 
-    private static int request_album_content(){
+    private static int request_album_content() throws IOException {
+
+        String command;
+        String album_name;
+        System.out.println("Enter album name (or enter to leave):");
+        album_name = reader.readLine();
+
+
+        out.println("get_files,"+album_name);
+        String response = in.readLine();
+        System.out.println(response);
+        return 1;
+    }
+
+    private static int request_file_data(){
         // primeiro pedir ao servidor central os metadados do album e depois pedir o conteudo ao servidor de dados
         return 1;
     }
