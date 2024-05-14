@@ -64,7 +64,7 @@ parse_users(UsersData) ->
     Users = lists:map(fun(User) -> string:strip(User) end, UsersList),
     sets:from_list(Users).
 
-% "{file2=>{nuno=>10}|file3=>{nuno=>4}}" -> [{file2, {nuno, "10"}}, {file3, {nuno, "4"}}]
+% "{file2=>{nuno=>10}|file3=>{nuno=>4}}" -> {file2, {nuno, 10}}, {file3, {nuno, 4}}
 parse_files(FilesData) ->
     CleanData = string:replace(string:replace(FilesData, "{", "", all), "}", "", all),
     FilesList = re:split(CleanData, "\\|", [{return, list}]),
@@ -76,13 +76,13 @@ parse_files(FilesData) ->
     end, FilesList),
     maps:from_list(Files).
 
-% "{nuno=>10}" -> [{nuno, "10"}]
+% "{nuno=>10}" -> {nuno, 10}
 parse_ratings(RatingsData) ->
     CleanData = string:replace(string:replace(RatingsData, "{", "", all), "}", "", all),
     RatingsList = re:split(CleanData, ",", [{return, list}]),
     Ratings = lists:map(fun(Rating) ->
         [User, Rate] = re:split(Rating, "=>", [{return, list}]),
-        {string:strip(User), string:strip(Rate)}
+        {string:strip(User), list_to_integer(string:strip(Rate))}
     end, RatingsList),
     maps:from_list(Ratings).
 
