@@ -270,7 +270,7 @@ userAuth(Socket,User) ->
                         true ->
                             user_manager ! {{get_album_users, Album}, self()},
                             receive
-                                {ok, Users} ->
+                                {ok, Users,user_manager} ->
                                     % UsersMsg = io_lib:format("Users: ~p\n", [sets:to_list(Users)]),
                                     UsersMsg = io_lib:format("~p\n", [Users]),
                                     gen_tcp:send(Socket, UsersMsg);
@@ -279,7 +279,8 @@ userAuth(Socket,User) ->
                             end,
                             file_manager ! {{get_album_files, Album, User}, self()},
                             receive
-                                {ok, Files} ->
+                                {ok, Files,file_manager} ->
+                                    io:format("Users: ~p~n", [Files]),
                                     % FilesList = [File || {File, Ratings} <- maps:to_list(Files), Ratings =/= #{}],
                                     FilesMsg = io_lib:format("~p\n", [Files]),
                                     % FilesMsg = io_lib:format("Files: ~p\n", [FilesList]),
