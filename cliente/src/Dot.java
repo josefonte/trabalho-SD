@@ -24,4 +24,12 @@ public class Dot {
         return new Dot(dotString);
     }
 
+    @Override
+    public String toString() {
+        return "(" + pid + "," + seqNum+")";
+    }
+
+    public boolean equals(Dot other) {
+        return this.pid.equals(other.pid) && this.seqNum == other.seqNum;
+    }
 }

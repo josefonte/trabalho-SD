@@ -40,7 +40,13 @@ public class Client {
                 System.out.println("2. Authenticate");
                 System.out.println("3. Exit");
 
-                int choice = Integer.parseInt(reader.readLine());
+                int choice;
+                try {
+                    choice = Integer.parseInt(reader.readLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice. Please try again.");
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
@@ -110,8 +116,13 @@ public class Client {
                 System.out.println("2. Edit Album");
                 System.out.println("3. Request Album Content");
                 System.out.println("4. Exit");
-
-                int choice = Integer.parseInt(reader.readLine());
+                int choice;
+                try {
+                    choice = Integer.parseInt(reader.readLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid choice. Please try again.");
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
@@ -250,6 +261,7 @@ public class Client {
             ZMQ.Socket publisher = context.createSocket(SocketType.PUB);
 
             long pid = ProcessHandle.current().pid();
+            String pid_string = Long.toString(pid);
 
             // estado do chat
             VersionVector versionVector = new VersionVector();
@@ -320,18 +332,21 @@ public class Client {
                         String file_name = parts[1];
                         message = "add_file," + album + "," + file_name;
                         crdt_name = "files";
+                        ficheiros.add(file_name,pid_string);
                         crdt = ficheiros.serialize();
                     } else if (command.startsWith("\\remove_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
                         message = "remove_file," + album + "," + file_name;
                         crdt_name = "files";
+                        ficheiros.remove(file_name,pid_string);
                         crdt = ficheiros.serialize();
                     } else if (command.startsWith("\\rate_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
                         String rating = parts[2];
                         message = "rate_file," + album + "," + file_name + "," + rating;
+
                         crdt_name = "rates";
                         crdt = "";
                     } else if (command.startsWith("\\add_user")) {
@@ -339,15 +354,18 @@ public class Client {
                         String username = parts[1];
                         message = "add_user," + album + "," + username;
                         crdt_name = "users";
+                        utilizadores.add(username,pid_string);
                         crdt = utilizadores.serialize();
                     } else if (command.startsWith("\\remove_user")) {
                         String[] parts = command.split(" ");
                         String username = parts[1];
                         message = "remove_user," + album + "," + username;
                         crdt_name = "users";
+                        utilizadores.remove(username,pid_string);
                         crdt = utilizadores.serialize();
                     }
                     else {
+                        System.out.println("Invalid command. Please try again.");
                         continue;
                     }
                     String new_message = String.format("%s:command:%s:%s:%s", album, pid, crdt_name,crdt);

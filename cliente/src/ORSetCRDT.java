@@ -8,7 +8,7 @@ public class ORSetCRDT {
 
     public void add(String name, String pid) {
         Long pid_long = Long.parseLong(pid);
-        int seqNum = cc.get(pid_long)+1;
+        int seqNum = cc.getOrDefault(pid_long,0)+1;
         cc.put(pid_long,seqNum);
         Dot dot = new Dot(pid,seqNum);
         HashSet<Dot> dots = new HashSet<>();
@@ -35,19 +35,19 @@ public class ORSetCRDT {
             // calcular v(k) = fst((m(k), c) ⊔ (m′(k), c′))
             // (s ∩ s′) ∪ (s \ c′) ∪ (s′\ c),
             HashSet<Dot> dots = new HashSet<>();
-            HashSet<Dot> s = m.get(key);
-            HashSet<Dot> s_m = m_m.get(key);
+            HashSet<Dot> s = m.getOrDefault(key, new HashSet<>());
+            HashSet<Dot> s_m = m_m.getOrDefault(key, new HashSet<>());
             HashSet<Dot> v_k = new HashSet(s); // use the copy constructor
             v_k.retainAll(s_m);
             for (Dot dot : s){
                 Long pid = Long.parseLong(dot.pid);
-                if (cc_m.get(pid) < dot.seqNum){
+                if (cc_m.getOrDefault(pid,0) < dot.seqNum){
                     v_k.add(dot);
                 }
             }
             for (Dot dot : s_m){
                 Long pid = Long.parseLong(dot.pid);
-                if (cc.get(pid) < dot.seqNum){
+                if (cc.getOrDefault(pid,0) < dot.seqNum){
                     v_k.add(dot);
                 }
             }
@@ -58,6 +58,9 @@ public class ORSetCRDT {
         }
         // c ∪ c′
         cc.update(cc_m);
+        m = new_m;
+        System.out.println("New m: " + m);
+
     }
 
     public String serialize(){
@@ -65,21 +68,21 @@ public class ORSetCRDT {
         for (HashMap.Entry<String, HashSet<Dot>> entry : m.entrySet()) {
             sb.append(entry.getKey()).append("=");
             for (Dot dot : entry.getValue()){
-                sb.append(dot.serializeDot()).append(",");
+                sb.append(dot.serializeDot()).append(";");
             }
-            sb.append(";");
+            sb.append(".");
         }
         return sb.toString();
     }
 
     public static ORSetCRDT deserialize(String orSetString){
         ORSetCRDT orSet = new ORSetCRDT();
-        String[] entries = orSetString.split(";");
+        String[] entries = orSetString.split("\\.");
         for (String entry : entries) {
             String[] parts = entry.split("=");
             String name = parts[0];
             HashSet<Dot> dots = new HashSet<>();
-            String[] dotsString = parts[1].split(",");
+            String[] dotsString = parts[1].split(";");
             for (String dotString : dotsString){
                 dots.add(Dot.deserializeDot(dotString));
             }
