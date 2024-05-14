@@ -266,9 +266,10 @@ public class Client {
             // estado do chat
             VersionVector versionVector = new VersionVector();
 
-            // estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores
+            // estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores e o rate que este user deu
             ORSetCRDT utilizadores = new ORSetCRDT();
             ORSetCRDT ficheiros = new ORSetCRDT();
+            HashMap<String,String> rates = new HashMap<>();
 
 
 
@@ -300,11 +301,11 @@ public class Client {
                         }
                         if (parts[3].equals("users")){
                             ORSetCRDT utilizadores_m = ORSetCRDT.deserialize(parts[4]);
-                            utilizadores.merge(utilizadores_m);
+                            utilizadores.join(utilizadores_m);
                         }
                         else if (parts[3].equals("files")){
                             ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
-                            ficheiros.merge(ficheiros_m);
+                            ficheiros.join(ficheiros_m);
                         }
                     }
 
@@ -345,10 +346,12 @@ public class Client {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
                         String rating = parts[2];
-                        message = "rate_file," + album + "," + file_name + "," + rating;
-
-                        crdt_name = "rates";
-                        crdt = "";
+                        if (rates.containsKey(file_name)){
+                            System.out.println("You have already rated this file. Please try again.");
+                            continue;
+                        }
+                        rates.put(file_name,rating);
+                        continue;
                     } else if (command.startsWith("\\add_user")) {
                         String[] parts = command.split(" ");
                         String username = parts[1];

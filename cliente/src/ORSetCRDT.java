@@ -20,7 +20,7 @@ public class ORSetCRDT {
         m.remove(name);
     }
 
-    public void merge(ORSetCRDT other){
+    public void join(ORSetCRDT other){
         VersionVector cc_m = other.cc;
         HashMap<String, HashSet<Dot>> m_m = other.m;
 

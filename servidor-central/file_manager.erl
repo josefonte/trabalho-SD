@@ -57,7 +57,7 @@ loop(Map) ->
                     case maps:find(Name, Files) of
                         error ->
                             From ! {ok, ?MODULE},
-                            NewFiles = maps:put(Name,[],Files),
+                            NewFiles = maps:put(Name,#{},Files),
                             loop(maps:put(Album,NewFiles,Map));
                         {ok,_} ->
                             From ! {filename_exists, ?MODULE},
@@ -82,19 +82,25 @@ loop(Map) ->
                             loop(Map)
                         end
             end;
-        {{rate_file,Album, Name,Rate},From} ->
+        {{rate_file,Album, Name,Rate,Username},From} ->
             case maps:find(Album, Map) of
                 error ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map);
                 {ok, Files} ->
                     case maps:find(Name, Files) of
-                        {ok, {Description, Rates}} ->
-                            NewRates = [Rate | Rates],
-                            From ! {ok, ?MODULE},
-                            NewFiles = maps:put(Name, {Description, NewRates}, Files),
-                            NewMap = maps:put(Album, NewFiles, Map),
-                            loop(NewMap);
+                        {ok, Rates} ->
+                            case maps:find(Username, Rates) of
+                                false ->
+                                    NewRates = maps:put(Username, Rate, Rates),
+                                    NewFiles = maps:put(Name,  NewRates, Files),
+                                    NewMap = maps:put(Album, NewFiles, Map),
+                                    From ! {ok, ?MODULE},
+                                    loop(NewMap);
+                                _ ->
+                                    From ! {file_already_rated, ?MODULE},
+                                    loop(Map)
+                            end;
                         _ ->
                             From ! {file_not_found, ?MODULE},
                             loop(Map)

@@ -186,14 +186,16 @@ userAuth(Socket,User) ->
                         false ->
                             gen_tcp:send(Socket, "You must be a user of the album to rate a file\n");
                         true ->
-                            file_manager ! {{rate_file, Album, File, Rate}, self()},
+                            file_manager ! {{rate_file, Album, File, Rate,User}, self()},
                             receive
                                 {ok, _} ->
                                     gen_tcp:send(Socket, "File rated\n");
                                 {file_not_found, _} ->
                                     gen_tcp:send(Socket, "File not found\n");
                                 {album_not_found, _} ->
-                                    gen_tcp:send(Socket, "Album not found\n")
+                                    gen_tcp:send(Socket, "Album not found\n");
+                                {file_already_rated, _} ->
+                                    gen_tcp:send(Socket, "File already rated\n")
                             end
                     end,
                     userAuth(Socket,User);
