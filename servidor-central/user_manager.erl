@@ -38,6 +38,7 @@ loop(Map) ->
                     From ! {album_exists, ?MODULE},
                     loop(Map)
             end;
+
         {{verify_user,Album,User},From} ->
             case maps:find(Album,Map) of
                 {ok,Users} ->
@@ -53,6 +54,7 @@ loop(Map) ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map)
             end;
+
         {{add_user,Album, Username},From} ->
             case maps:find(Album,Map) of
                 error ->
@@ -69,6 +71,7 @@ loop(Map) ->
                             loop(Map)
                     end
             end;
+
         {{remove_user, Album,Username},From} ->
             case maps:find(Album, Map) of
                {ok, Users} ->
@@ -84,6 +87,33 @@ loop(Map) ->
                _ ->
                    From ! {album_not_found, ?MODULE},
                    loop(Map)
+            end;
+
+        {{update_album, Album, Users}, From} ->
+            case maps:find(Album, Map) of
+                error ->
+                    From ! {album_not_found, ?MODULE},
+                    loop(Map);
+                {ok, ExistingUsers} ->
+                    case sets:is_subset(Users, ExistingUsers) of
+                        true ->
+                            From ! {ok, ?MODULE},
+                            NewMap = maps:put(Album, Users, Map),
+                            loop(NewMap);
+                        false ->
+                            From ! {invalid_users, ?MODULE},
+                            loop(Map)
+                    end
+            end;
+
+        {{get_album_users, Album}, From} ->
+            case maps:find(Album, Map) of
+                {ok, Users} ->
+                    From ! {ok, Users, ?MODULE},
+                    loop(Map);
+                _ ->
+                    From ! {album_not_found, ?MODULE},
+                    loop(Map)
             end
 
     end.

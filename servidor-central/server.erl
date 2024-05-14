@@ -57,6 +57,35 @@ userExists(Username) ->
         _ -> false
     end.
 
+% "[nuno|alice]" -> ["nuno", "alice"]
+parse_users(UsersData) ->
+    CleanData = string:replace(string:replace(UsersData, "[", "", all), "]", "", all),
+    UsersList = re:split(CleanData, "\\|", [{return, list}]),
+    Users = lists:map(fun(User) -> string:strip(User) end, UsersList),
+    sets:from_list(Users).
+
+% "{file2=>{nuno=>10}|file3=>{nuno=>4}}" -> [{file2, {nuno, "10"}}, {file3, {nuno, "4"}}]
+parse_files(FilesData) ->
+    CleanData = string:replace(string:replace(FilesData, "{", "", all), "}", "", all),
+    FilesList = re:split(CleanData, "\\|", [{return, list}]),
+    Files = lists:map(fun(File) ->
+        [NamePart | RatingsPart] = re:split(File, "=>", [{return, list}]),
+        Name = string:strip(NamePart),
+        Ratings = parse_ratings(string:strip(string:join(RatingsPart, "=>"))),
+        {Name, Ratings}
+    end, FilesList),
+    maps:from_list(Files).
+
+% "{nuno=>10}" -> [{nuno, "10"}]
+parse_ratings(RatingsData) ->
+    CleanData = string:replace(string:replace(RatingsData, "{", "", all), "}", "", all),
+    RatingsList = re:split(CleanData, ",", [{return, list}]),
+    Ratings = lists:map(fun(Rating) ->
+        [User, Rate] = re:split(Rating, "=>", [{return, list}]),
+        {string:strip(User), string:strip(Rate)}
+    end, RatingsList),
+    maps:from_list(Ratings).
+
 
 userAuth(Socket,User) ->
     receive
@@ -146,6 +175,7 @@ userAuth(Socket,User) ->
                             gen_tcp:send(Socket,"OK\n")
                     end,
                     userAuth(Socket,User);
+
                 ["get_files", Album] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -233,6 +263,33 @@ userAuth(Socket,User) ->
                     end,
                     userAuth(Socket,User);
 
+                ["get_album_info", Album] ->
+                    case verifyUser(Album,User) of
+                        false ->
+                            gen_tcp:send(Socket, "You must be a user of the album to get its info\n");
+                        true ->
+                            user_manager ! {{get_album_users, Album}, self()},
+                            receive
+                                {ok, Users} ->
+                                    % UsersMsg = io_lib:format("Users: ~p\n", [sets:to_list(Users)]),
+                                    UsersMsg = io_lib:format("~p\n", [Users]),
+                                    gen_tcp:send(Socket, UsersMsg);
+                                {album_not_found, _} ->
+                                    gen_tcp:send(Socket, "Album not found\n")
+                            end,
+                            file_manager ! {{get_album_files, Album, User}, self()},
+                            receive
+                                {ok, Files} ->
+                                    % FilesList = [File || {File, Ratings} <- maps:to_list(Files), Ratings =/= #{}],
+                                    FilesMsg = io_lib:format("~p\n", [Files]),
+                                    % FilesMsg = io_lib:format("Files: ~p\n", [FilesList]),
+                                    gen_tcp:send(Socket, FilesMsg);
+                                {album_not_found, _} ->
+                                    gen_tcp:send(Socket, "Album not found\n")
+                            end
+                    end,
+                    userAuth(Socket,User);
+
                 ["add_user", Album, Username] ->
                     case verifyUser(Album,User) of
                         false ->
@@ -274,6 +331,29 @@ userAuth(Socket,User) ->
                                             gen_tcp:send(Socket, "Album not found\n")
                                     end
                             end
+                    end,
+                    userAuth(Socket,User);
+
+                ["update_album", Album, Users, Files] ->
+                    ParsedUsers = parse_users(Users),
+                    case verifyUser(Album,User) of
+                        false ->
+                            gen_tcp:send(Socket, "You must be a user of the album to update it\n");
+                        true ->
+                            user_manager ! {{update_album, Album, ParsedUsers}, self()},
+                            receive
+                                {ok, _} ->
+                                    ParsedFiles = parse_files(Files),
+                                    file_manager ! {{update_album, Album, ParsedFiles}, self()},
+                                    receive
+                                        {ok, _} ->
+                                            gen_tcp:send(Socket, "Album updated\n");
+                                        {album_not_found, _} ->
+                                            gen_tcp:send(Socket, "Album not found\n")
+                                    end;
+                                {invalid_users, _} ->
+                                    gen_tcp:send(Socket, "Invalid users\n")
+                                end
                     end,
                     userAuth(Socket,User);
 
