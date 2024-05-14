@@ -47,7 +47,7 @@ loop(Map) ->
                     From ! {ok, Files},
                     loop(Map)
             end;
-        {{add_file,Album, Name,Descricao},From} ->
+        {{add_file,Album, Name},From} ->
             % ir buscar map daquele album
             case maps:find(Album,Map) of
                 error -> 
@@ -57,7 +57,7 @@ loop(Map) ->
                     case maps:find(Name, Files) of
                         error ->
                             From ! {ok, ?MODULE},
-                            NewFiles = maps:put(Name,{Descricao,[]},Files),
+                            NewFiles = maps:put(Name,[],Files),
                             loop(maps:put(Album,NewFiles,Map));
                         {ok,_} ->
                             From ! {filename_exists, ?MODULE},

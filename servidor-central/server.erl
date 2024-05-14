@@ -147,12 +147,12 @@ userAuth(Socket,User) ->
                     end,
                     userAuth(Socket,User);
 
-                ["add_file", Album,File,Descricao] ->
+                ["add_file", Album,File] ->
                     case verifyUser(Album,User) of
                         false ->
                             gen_tcp:send(Socket, "You must be a user of the album to add a file\n");
                         true ->
-                            file_manager ! {{add_file, Album,File,Descricao}, self()},
+                            file_manager ! {{add_file, Album,File}, self()},
                             receive
                                 {ok, _} ->
                                     gen_tcp:send(Socket, "File added\n");
