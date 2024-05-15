@@ -171,6 +171,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int SEG_FIELD_NUMBER = 5;
+  private long seg_ = 0L;
+  /**
+   * <code>int64 seg = 5;</code>
+   * @return The seg.
+   */
+  @java.lang.Override
+  public long getSeg() {
+    return seg_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -197,6 +208,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, key_);
     }
+    if (seg_ != 0L) {
+      output.writeInt64(5, seg_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -218,6 +232,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, key_);
+    }
+    if (seg_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(5, seg_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -242,6 +260,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getStatus())) return false;
     if (!getKey()
         .equals(other.getKey())) return false;
+    if (getSeg()
+        != other.getSeg()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -261,6 +281,9 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getStatus().hashCode();
     hash = (37 * hash) + KEY_FIELD_NUMBER;
     hash = (53 * hash) + getKey().hashCode();
+    hash = (37 * hash) + SEG_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getSeg());
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -396,6 +419,7 @@ private static final long serialVersionUID = 0L;
       fileContent_ = com.google.protobuf.ByteString.EMPTY;
       status_ = "";
       key_ = "";
+      seg_ = 0L;
       return this;
     }
 
@@ -440,6 +464,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.key_ = key_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.seg_ = seg_;
       }
     }
 
@@ -505,6 +532,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000008;
         onChanged();
       }
+      if (other.getSeg() != 0L) {
+        setSeg(other.getSeg());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -551,6 +581,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 40: {
+              seg_ = input.readInt64();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -812,6 +847,38 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       key_ = value;
       bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+
+    private long seg_ ;
+    /**
+     * <code>int64 seg = 5;</code>
+     * @return The seg.
+     */
+    @java.lang.Override
+    public long getSeg() {
+      return seg_;
+    }
+    /**
+     * <code>int64 seg = 5;</code>
+     * @param value The seg to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSeg(long value) {
+
+      seg_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 seg = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSeg() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      seg_ = 0L;
       onChanged();
       return this;
     }

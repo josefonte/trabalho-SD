@@ -49,4 +49,10 @@ public interface FileContentOrBuilder extends
    */
   com.google.protobuf.ByteString
       getKeyBytes();
+
+  /**
+   * <code>int64 seg = 5;</code>
+   * @return The seg.
+   */
+  long getSeg();
 }
