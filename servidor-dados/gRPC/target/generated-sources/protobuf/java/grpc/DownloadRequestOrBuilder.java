@@ -31,4 +31,10 @@ public interface DownloadRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getFileKeyBytes();
+
+  /**
+   * <code>int32 chunkFlag = 3;</code>
+   * @return The chunkFlag.
+   */
+  int getChunkFlag();
 }

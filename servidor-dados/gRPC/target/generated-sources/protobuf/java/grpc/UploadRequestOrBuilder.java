@@ -37,4 +37,16 @@ public interface UploadRequestOrBuilder extends
    * @return The fileContent.
    */
   com.google.protobuf.ByteString getFileContent();
+
+  /**
+   * <code>int64 seg = 4;</code>
+   * @return The seg.
+   */
+  long getSeg();
+
+  /**
+   * <code>int32 total_chunks = 5;</code>
+   * @return The totalChunks.
+   */
+  int getTotalChunks();
 }

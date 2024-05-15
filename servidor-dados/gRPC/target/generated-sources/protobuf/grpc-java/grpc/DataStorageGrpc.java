@@ -22,7 +22,7 @@ public final class DataStorageGrpc {
       fullMethodName = SERVICE_NAME + '/' + "uploadFile",
       requestType = grpc.UploadRequest.class,
       responseType = grpc.FileContent.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
   public static io.grpc.MethodDescriptor<grpc.UploadRequest,
       grpc.FileContent> getUploadFileMethod() {
     io.grpc.MethodDescriptor<grpc.UploadRequest, grpc.FileContent> getUploadFileMethod;
@@ -31,7 +31,7 @@ public final class DataStorageGrpc {
         if ((getUploadFileMethod = DataStorageGrpc.getUploadFileMethod) == null) {
           DataStorageGrpc.getUploadFileMethod = getUploadFileMethod =
               io.grpc.MethodDescriptor.<grpc.UploadRequest, grpc.FileContent>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "uploadFile"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -127,9 +127,9 @@ public final class DataStorageGrpc {
 
     /**
      */
-    default void uploadFile(grpc.UploadRequest request,
+    default io.grpc.stub.StreamObserver<grpc.UploadRequest> uploadFile(
         io.grpc.stub.StreamObserver<grpc.FileContent> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getUploadFileMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getUploadFileMethod(), responseObserver);
     }
 
     /**
@@ -169,10 +169,10 @@ public final class DataStorageGrpc {
 
     /**
      */
-    public void uploadFile(grpc.UploadRequest request,
+    public io.grpc.stub.StreamObserver<grpc.UploadRequest> uploadFile(
         io.grpc.stub.StreamObserver<grpc.FileContent> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
-          getChannel().newCall(getUploadFileMethod(), getCallOptions()), request, responseObserver);
+      return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
+          getChannel().newCall(getUploadFileMethod(), getCallOptions()), responseObserver);
     }
 
     /**
@@ -202,14 +202,6 @@ public final class DataStorageGrpc {
 
     /**
      */
-    public java.util.Iterator<grpc.FileContent> uploadFile(
-        grpc.UploadRequest request) {
-      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
-          getChannel(), getUploadFileMethod(), getCallOptions(), request);
-    }
-
-    /**
-     */
     public java.util.Iterator<grpc.FileContent> downloadFile(
         grpc.DownloadRequest request) {
       return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
@@ -234,8 +226,8 @@ public final class DataStorageGrpc {
     }
   }
 
-  private static final int METHODID_UPLOAD_FILE = 0;
-  private static final int METHODID_DOWNLOAD_FILE = 1;
+  private static final int METHODID_DOWNLOAD_FILE = 0;
+  private static final int METHODID_UPLOAD_FILE = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -254,10 +246,6 @@ public final class DataStorageGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_UPLOAD_FILE:
-          serviceImpl.uploadFile((grpc.UploadRequest) request,
-              (io.grpc.stub.StreamObserver<grpc.FileContent>) responseObserver);
-          break;
         case METHODID_DOWNLOAD_FILE:
           serviceImpl.downloadFile((grpc.DownloadRequest) request,
               (io.grpc.stub.StreamObserver<grpc.FileContent>) responseObserver);
@@ -272,6 +260,9 @@ public final class DataStorageGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_UPLOAD_FILE:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.uploadFile(
+              (io.grpc.stub.StreamObserver<grpc.FileContent>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -282,7 +273,7 @@ public final class DataStorageGrpc {
     return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
         .addMethod(
           getUploadFileMethod(),
-          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
             new MethodHandlers<
               grpc.UploadRequest,
               grpc.FileContent>(

@@ -119,6 +119,17 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int CHUNKFLAG_FIELD_NUMBER = 3;
+  private int chunkFlag_ = 0;
+  /**
+   * <code>int32 chunkFlag = 3;</code>
+   * @return The chunkFlag.
+   */
+  @java.lang.Override
+  public int getChunkFlag() {
+    return chunkFlag_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -139,6 +150,9 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fileKey_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, fileKey_);
     }
+    if (chunkFlag_ != 0) {
+      output.writeInt32(3, chunkFlag_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -153,6 +167,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fileKey_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, fileKey_);
+    }
+    if (chunkFlag_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(3, chunkFlag_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -173,6 +191,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getFileName())) return false;
     if (!getFileKey()
         .equals(other.getFileKey())) return false;
+    if (getChunkFlag()
+        != other.getChunkFlag()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -188,6 +208,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getFileName().hashCode();
     hash = (37 * hash) + FILEKEY_FIELD_NUMBER;
     hash = (53 * hash) + getFileKey().hashCode();
+    hash = (37 * hash) + CHUNKFLAG_FIELD_NUMBER;
+    hash = (53 * hash) + getChunkFlag();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -321,6 +343,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       fileName_ = "";
       fileKey_ = "";
+      chunkFlag_ = 0;
       return this;
     }
 
@@ -359,6 +382,9 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.fileKey_ = fileKey_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.chunkFlag_ = chunkFlag_;
       }
     }
 
@@ -416,6 +442,9 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
+      if (other.getChunkFlag() != 0) {
+        setChunkFlag(other.getChunkFlag());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -452,6 +481,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000002;
               break;
             } // case 18
+            case 24: {
+              chunkFlag_ = input.readInt32();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -609,6 +643,38 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       fileKey_ = value;
       bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+
+    private int chunkFlag_ ;
+    /**
+     * <code>int32 chunkFlag = 3;</code>
+     * @return The chunkFlag.
+     */
+    @java.lang.Override
+    public int getChunkFlag() {
+      return chunkFlag_;
+    }
+    /**
+     * <code>int32 chunkFlag = 3;</code>
+     * @param value The chunkFlag to set.
+     * @return This builder for chaining.
+     */
+    public Builder setChunkFlag(int value) {
+
+      chunkFlag_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 chunkFlag = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearChunkFlag() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      chunkFlag_ = 0;
       onChanged();
       return this;
     }
