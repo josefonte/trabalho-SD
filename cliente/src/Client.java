@@ -276,7 +276,10 @@ public class Client {
             ReentrantLock vvlock = new ReentrantLock();
             VersionVector versionVector = new VersionVector();
 
-            // estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores e o rate que este user deu
+            //TODO estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores e o rate que este user deu
+            // (NUNO)
+            // out.println("get_album_info,"+album);
+            // String response = in.readLine();
             ORSetCRDT utilizadores = new ORSetCRDT();
             ORSetCRDT ficheiros = new ORSetCRDT();
             HashMap<String,String> rates = new HashMap<>();
@@ -345,6 +348,7 @@ public class Client {
                     if (command.startsWith("\\add_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
+                        //TODO - upload file
                         message = "add_file," + album + "," + file_name;
                         crdt_name = "files";
                         ficheiros.add(file_name,pid_string);
@@ -352,6 +356,7 @@ public class Client {
                     } else if (command.startsWith("\\remove_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
+                        //TODO - remove file
                         message = "remove_file," + album + "," + file_name;
                         crdt_name = "files";
                         ficheiros.remove(file_name,pid_string);
@@ -388,6 +393,7 @@ public class Client {
                     }
                     String new_message = String.format("%s:command:%s:%s:%s", album, pid, crdt_name,crdt);
                     publisher.send(new_message.getBytes());
+                    //FIXME está a enviar pedido a pedido - enviar só no fim  (NUNO)
                     out.println(message);
                     String response = in.readLine();
                     System.out.println(response); // DEBUG
@@ -395,6 +401,7 @@ public class Client {
             }
                 command = reader.readLine();
             }
+            //TODO - enviar tudo de uma vez (NUNO)
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -471,7 +478,7 @@ public class Client {
     }
 
     private static int request_file_data(){
-        // primeiro pedir ao servidor central os metadados do album e depois pedir o conteudo ao servidor de dados
+        //TODO download de ficheiros
         return 1;
     }
 

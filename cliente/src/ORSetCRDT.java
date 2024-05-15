@@ -20,6 +20,14 @@ public class ORSetCRDT {
         this.m = m;
     }
 
+    public HashSet<String> elements(){
+        HashSet<String> elements = new HashSet<>();
+        for (String elem : m.keySet()){
+            elements.add(elem);
+        }
+        return elements;
+    }
+
 
     public void add(String name, String pid) {
         Long pid_long = Long.parseLong(pid);
