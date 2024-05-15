@@ -29,7 +29,16 @@ public class Dot {
         return "(" + pid + "," + seqNum+")";
     }
 
-    public boolean equals(Dot other) {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Dot other = (Dot) obj;
         return this.pid.equals(other.pid) && this.seqNum == other.seqNum;
+    }
+
+    @Override
+    public int hashCode() {
+        return pid.hashCode() + seqNum;
     }
 }

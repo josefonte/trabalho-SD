@@ -1,24 +1,50 @@
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ORSetCRDT {
-    VersionVector cc = new VersionVector();
-    HashMap<String, HashSet<Dot>> m = new HashMap<>();
+    VersionVector cc;
+    HashMap<String, HashSet<Dot>> m;
+
+    ReentrantLock lock = new ReentrantLock();
+
+    public ORSetCRDT(){
+        this.cc = new VersionVector();
+        this.m = new HashMap<>();
+    }
+
+    public ORSetCRDT(VersionVector cc, HashMap<String, HashSet<Dot>> m){
+        this.cc = cc;
+        this.m = m;
+    }
+
 
     public void add(String name, String pid) {
         Long pid_long = Long.parseLong(pid);
+        lock.lock();
         int seqNum = cc.getOrDefault(pid_long,0)+1;
         cc.put(pid_long,seqNum);
         Dot dot = new Dot(pid,seqNum);
         HashSet<Dot> dots = new HashSet<>();
         dots.add(dot);
         m.put(name, dots);
+        lock.unlock();
     }
 
+
+
     public void remove(String name, String pid) {
+        lock.lock();
         m.remove(name);
+        lock.unlock();
     }
+
+
+
+
+
 
     public void join(ORSetCRDT other){
         VersionVector cc_m = other.cc;
@@ -29,6 +55,7 @@ public class ORSetCRDT {
 
         HashMap<String, HashSet<Dot>> new_m = new HashMap<>();
         HashSet<String> keys = new HashSet<>();
+        lock.lock();
         keys.addAll(m.keySet());
         keys.addAll(m_m.keySet());
         for (String key : keys){
@@ -37,8 +64,15 @@ public class ORSetCRDT {
             HashSet<Dot> dots = new HashSet<>();
             HashSet<Dot> s = m.getOrDefault(key, new HashSet<>());
             HashSet<Dot> s_m = m_m.getOrDefault(key, new HashSet<>());
-            HashSet<Dot> v_k = new HashSet(s); // use the copy constructor
-            v_k.retainAll(s_m);
+            HashSet<Dot> v_k = new HashSet();
+            //v_k.retainAll(s_m); --> não estava a funcionar
+            for (Dot dot1 : s) {
+                for (Dot dot2 : s_m) {
+                    if (dot1.equals(dot2)) {
+                        v_k.add(dot1);
+                    }
+                }
+            }
             for (Dot dot : s){
                 Long pid = Long.parseLong(dot.pid);
                 if (cc_m.getOrDefault(pid,0) < dot.seqNum){
@@ -56,10 +90,12 @@ public class ORSetCRDT {
             }
 
         }
-        // c ∪ c′
+        // m = c ∪ c′
         cc.update(cc_m);
         m = new_m;
         System.out.println("New m: " + m);
+        lock.unlock();
+
 
     }
 
@@ -72,24 +108,133 @@ public class ORSetCRDT {
             }
             sb.append(".");
         }
+        sb.append("#");
+        sb.append(cc.serializeCausalContext());
         return sb.toString();
     }
 
     public static ORSetCRDT deserialize(String orSetString){
         ORSetCRDT orSet = new ORSetCRDT();
-        String[] entries = orSetString.split("\\.");
-        for (String entry : entries) {
-            String[] parts = entry.split("=");
-            String name = parts[0];
-            HashSet<Dot> dots = new HashSet<>();
-            String[] dotsString = parts[1].split(";");
-            for (String dotString : dotsString){
-                dots.add(Dot.deserializeDot(dotString));
+        String[] contents = orSetString.split("#");
+        if (!contents[0].equals("")){
+            String[] entries = contents[0].split("\\.");
+            for (String entry : entries) {
+                String[] parts = entry.split("=");
+                String name = parts[0];
+                HashSet<Dot> dots = new HashSet<>();
+                String[] dotsString = parts[1].split(";");
+                for (String dotString : dotsString){
+                    dots.add(Dot.deserializeDot(dotString));
+                }
+                orSet.m.put(name, dots);
             }
-            orSet.m.put(name, dots);
+        }
+        if (contents.length > 1){
+            orSet.cc = VersionVector.deserializeCausalContext(contents[1]);
         }
         return orSet;
     }
+
+
+
+
+    public ORSetCRDT addDelta(String name, String pid) {
+        //  ({(i, n, e)}, {(i, n + 1)})
+        //  with n = max({k | (i, k) ∈ c})
+        int n = cc.getOrDefault(Long.parseLong(pid),0);
+        VersionVector cc_delta = new VersionVector();
+        cc_delta.put(Long.parseLong(pid),n+1);
+        HashMap<String, HashSet<Dot>> m_delta = new HashMap<>();
+        Dot dot = new Dot(pid,n+1);
+        HashSet<Dot> dots = new HashSet<>();
+        dots.add(dot);
+        m_delta.put(name, dots);
+        ORSetCRDT delta = new ORSetCRDT(cc_delta,m_delta);
+        joinDelta(delta);
+        return delta;
+    }
+
+    public ORSetCRDT removeDelta(String name, String pid) {
+        //  ({}, {(j, n) | (j, n, e) ∈ s})
+        HashSet<Dot> dots = m.getOrDefault(name,new HashSet<>());
+        VersionVector cc_delta = new VersionVector();
+        for (Dot dot : dots){
+            cc_delta.put(Long.parseLong(dot.pid),dot.seqNum);
+        }
+        HashMap<String, HashSet<Dot>> m_delta = new HashMap<>();
+        ORSetCRDT delta = new ORSetCRDT(cc_delta,m_delta);
+        joinDelta(delta);
+        return delta;
+    }
+
+    public void joinDelta(ORSetCRDT other){
+        VersionVector cc_m = other.cc;
+        HashMap<String, HashSet<Dot>> m_m = other.m;
+        // m = (s ∩ s') ∪ {(i, n, e) ∈ s | (i, n) ∉ c'}∪{(i, n, e) ∈ s' | (i, n) ∉ c}
+        HashMap<String, HashSet<Dot>> new_m = new HashMap<>();
+        // (s ∩ s')
+        for(String key : m.keySet()){
+            if (m_m.containsKey(key)){
+                HashSet<Dot> dots = new HashSet<>();
+                HashSet<Dot> s = m.get(key);
+                HashSet<Dot> s_m = m_m.get(key);
+                for (Dot dot : s){
+                    if (s_m.contains(dot)){
+                        dots.add(dot);
+                    }
+                }
+                if (!dots.isEmpty()){
+                    new_m.put(key,dots);
+                }
+            }
+        }
+        // { (i, n, e) ∈ s | (i, n) ∉ c'}
+        for(Map.Entry<String, HashSet<Dot>> entry : m.entrySet()){
+            String key = entry.getKey();
+            HashSet<Dot> dots = new HashSet<>();
+            HashSet<Dot> s = entry.getValue();
+            for(Dot dot : s){
+                Long pid = Long.parseLong(dot.pid);
+                if (!cc_m.containsKey(pid) || !cc_m.get(pid).equals(dot.seqNum)){
+                    dots.add(dot);
+                }
+            }
+            if (!dots.isEmpty()){
+                HashSet<Dot> current_dots = new_m.getOrDefault(key,new HashSet<>());
+                current_dots.addAll(dots);
+                new_m.put(key,current_dots);
+            }
+
+        }
+
+        // {(i, n, e) ∈ s' | (i, n) ∉ c}
+        for(Map.Entry<String, HashSet<Dot>> entry : m_m.entrySet()){
+            String key = entry.getKey();
+            HashSet<Dot> dots = new HashSet<>();
+            HashSet<Dot> s = entry.getValue();
+            for(Dot dot : s){
+                Long pid = Long.parseLong(dot.pid);
+                if (!cc.containsKey(pid) || !cc.get(pid).equals(dot.seqNum)){
+                    dots.add(dot);
+                }
+            }
+            if (!dots.isEmpty()){
+                HashSet<Dot> current_dots = new_m.getOrDefault(key,new HashSet<>());
+                current_dots.addAll(dots);
+                new_m.put(key,current_dots);
+            }
+
+        }
+
+
+        // c = c ∪ c'
+        cc.update(cc_m);
+
+        m = new_m;
+        System.out.println("New m: " + m);
+    }
+
+
 
 
 

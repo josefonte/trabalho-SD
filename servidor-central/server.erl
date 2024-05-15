@@ -14,7 +14,7 @@ server(Port) ->
             user_manager:start(),
             file_manager:start(),
             login_manager:start(),
-            acceptor(ListenSocket);
+            acceptor(ListenSocket,Port);
 
         {error, _} ->
             stop(Port),
@@ -24,22 +24,26 @@ server(Port) ->
 stop(Port) -> gen_tcp:close(Port).
 
 
-acceptor(ListenSocket) ->
+acceptor(ListenSocket,Port) ->
     case gen_tcp:accept(ListenSocket) of
         {ok, Socket} ->
-            spawn(fun() -> acceptor(ListenSocket) end),
+            spawn(fun() -> acceptor(ListenSocket,Port) end),
             userAuth(Socket,"");
 
         {error, closed} ->
+            stop(Port),
             io:fwrite("Closed socket\n");
 
         {error, timeout} ->
+            stop(Port),
             io:fwrite("Timeout\n");
 
         {error, system_limit} ->
+            stop(Port),
             io:fwrite("Limit of socket reached\n");
 
         {error, _} ->
+            stop(Port),
             io:fwrite("Error listening to socket\n")
     end.
 

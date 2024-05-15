@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Client {
     private static final String SERVER_ADDRESS = "localhost";
@@ -193,6 +194,10 @@ public class Client {
                     }
                 }
             }
+            if (vv.lastReceived != null) {
+                vv.lastDependency = new VersionVector(vv.lastReceived);
+            }
+            vv.lastReceived = new VersionVector(vvm);
             return true;
         }
         return false;
@@ -222,7 +227,7 @@ public class Client {
 
     private static void handle_chat(String[] parts,VersionVector selfVV,
                                       ArrayList<String> pending_messages, ArrayList<Long> pending_pids,
-                                      ArrayList<VersionVector> pending_vv, Long mypid) {
+                                      ArrayList<VersionVector> pending_vv, Long mypid){
 
         String[] chat_parts = parts[2].split(";");
         Long id = Long.parseLong(chat_parts[0]);
@@ -235,6 +240,7 @@ public class Client {
         if (selfVV.firstMessage){
             selfVV.putAll(vv);
             System.out.println("Received: " + message);
+            selfVV.lastReceived = new VersionVector(vv);
             selfVV.firstMessage = false;
         }
         else{
@@ -267,6 +273,7 @@ public class Client {
             String pid_string = Long.toString(pid);
 
             // estado do chat
+            ReentrantLock vvlock = new ReentrantLock();
             VersionVector versionVector = new VersionVector();
 
             // estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores e o rate que este user deu
@@ -291,12 +298,12 @@ public class Client {
                     ArrayList<String> pending_messages = new ArrayList<>();
                     while (!Thread.currentThread().isInterrupted()) {
                     String receivedMessage = new String(subscriber.recv());
-                    // my message can either be of this format: album:chat:id,n:message
-                    // or this format: album:command:message
                     String[] parts = receivedMessage.split(":");
                     String type = parts[1];
                     if (type.equals("chat")) {
+                        vvlock.lock();
                         handle_chat(parts,versionVector,pending_messages,pending_pids,pending_vv,pid);
+                        vvlock.unlock();
                     } else {
                         String mpid = parts[2];
                         if (mpid.equals(Long.toString(pid))){
@@ -307,6 +314,7 @@ public class Client {
                             utilizadores.join(utilizadores_m);
                         }
                         else if (parts[3].equals("files")){
+                            System.out.println("Received: " + parts);
                             ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
                             ficheiros.join(ficheiros_m);
                         }
@@ -322,11 +330,14 @@ public class Client {
             String message;
             String crdt_name;
             String crdt;
+           // ORSetCRDT delta;
             while (!command.startsWith("\\exit")){
                 if (!command.startsWith("\\")){
+                    vvlock.lock();
                     int newSeqNum = versionVector.getOrDefault(pid,0) + 1;
                     versionVector.put(pid, newSeqNum);
                     String vv = versionVector.serializeVersionVector();
+                    vvlock.unlock();
                     String new_message = String.format("%s:chat:%s;%s:%s", album, pid,vv,command);
                     publisher.send(new_message.getBytes());
                 }
@@ -372,6 +383,7 @@ public class Client {
                     }
                     else {
                         System.out.println("Invalid command. Please try again.");
+                        command = reader.readLine();
                         continue;
                     }
                     String new_message = String.format("%s:command:%s:%s:%s", album, pid, crdt_name,crdt);
@@ -453,6 +465,7 @@ public class Client {
 
         out.println("get_files,"+album_name);
         String response = in.readLine();
+        //TODO - falta tratar a resposta
         System.out.println(response);
         return 1;
     }
