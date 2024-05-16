@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package node.proto;
+
+option java_multiple_files = true;
+option java_package = "node.proto";
+option java_outer_classname = "NodeProto";
+
+service DataServerNode {
+  rpc NewNode (NewNodeRequest) returns (NewNodeResponse) {}
+  rpc DownloadFile (DownloadFileRequest) returns (stream DownloadFileResponse) {}
+  rpc UploadFile (stream UploadFileRequest) returns (UploadFileResponse) {}
+ /* rpc MultiGreet (HelloRequest) returns (stream HelloResponse) {}
+  rpc StreamGreet (stream HelloRequest) returns (stream HelloResponse) {}*/
+}
+
+
+message NewNodeRequest {
+  string node_ip_add = 1;
+  string node_ip_port = 2;
+}
+message NewNodeResponse {
+  string node_ip_add = 1;
+  string node_ip_port = 2;
+}
+
+message DownloadFileRequest {
+  string file_name = 1;
+}
+message DownloadFileResponse {
+  bytes file_data = 1;
+}
+
+message UploadFileRequest {
+  string file_name = 1;
+  bytes file_data = 2;
+}
+message UploadFileResponse {
+  string file_name = 1;
+  bool success = 2;
+}
+

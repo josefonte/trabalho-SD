@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ORSetCRDT {
@@ -10,6 +7,11 @@ public class ORSetCRDT {
     HashMap<String, HashSet<Dot>> m;
 
     ReentrantLock lock = new ReentrantLock();
+
+    public ORSetCRDT(){
+        this.cc = new VersionVector();
+        this.m = new HashMap<>();
+    }
 
     public ORSetCRDT(String name){
         this.cc = new VersionVector();
@@ -46,18 +48,17 @@ public class ORSetCRDT {
         lock.unlock();
     }
 
-
+    public void simpleAdd(String name) {
+        lock.lock();
+        m.put(name, new HashSet<>());
+        lock.unlock();
+    }
 
     public void remove(String name, String pid) {
         lock.lock();
         m.remove(name);
         lock.unlock();
     }
-
-
-
-
-
 
     public void join(ORSetCRDT other){
         VersionVector cc_m = other.cc;
@@ -130,8 +131,23 @@ public class ORSetCRDT {
         return sb.toString();
     }
 
+    // ["name1"|"name2"|"name3"]
+    public String serializeNames() {
+        StringJoiner joiner = new StringJoiner("|");
+        for (String name : m.keySet()) {
+            joiner.add(name);
+        }
+        return "[" + joiner + "]";
+    }
+
+    // {file2=>{nuno=>10}|file3=>{nuno=>4}}
+//    public String serializeFiles(){
+//        StringJoiner joiner = new StringJoiner("|");
+//
+//    }
+
     public static ORSetCRDT deserialize(String orSetString){
-        ORSetCRDT orSet = new ORSetCRDT(this.name);
+        ORSetCRDT orSet = new ORSetCRDT();
         String[] contents = orSetString.split("#");
         if (!contents[0].equals("")){
             String[] entries = contents[0].split("\\.");

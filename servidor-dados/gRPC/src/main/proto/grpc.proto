@@ -5,7 +5,7 @@ package grpc;
 option java_multiple_files = true;
 
 service DataStorage {
-  rpc uploadFile(UploadRequest) returns (stream FileContent);
+  rpc uploadFile(stream UploadRequest) returns (FileContent);
   rpc downloadFile(DownloadRequest) returns (stream FileContent);
 }
 
@@ -13,11 +13,14 @@ message UploadRequest {
   string fileName = 1;
   string fileKey = 2;
   bytes fileContent = 3;
+  int64 seg = 4;
+  int32 total_chunks = 5;
 }
 
 message DownloadRequest {
   string fileName = 1;
   string fileKey = 2;
+  int32 chunkFlag = 3;
 }
 
 message FileContent {
@@ -25,4 +28,5 @@ message FileContent {
   bytes fileContent = 2;
   string status = 3;
   string key = 4;
+  int64 seg = 5;
 }

@@ -39,16 +39,17 @@ public final class Grpc {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\ngrpc.proto\022\004grpc\"G\n\rUploadRequest\022\020\n\010f" +
+      "\n\ngrpc.proto\022\004grpc\"j\n\rUploadRequest\022\020\n\010f" +
       "ileName\030\001 \001(\t\022\017\n\007fileKey\030\002 \001(\t\022\023\n\013fileCo" +
-      "ntent\030\003 \001(\014\"4\n\017DownloadRequest\022\020\n\010fileNa" +
-      "me\030\001 \001(\t\022\017\n\007fileKey\030\002 \001(\t\"Q\n\013FileContent" +
-      "\022\020\n\010fileName\030\001 \001(\t\022\023\n\013fileContent\030\002 \001(\014\022" +
-      "\016\n\006status\030\003 \001(\t\022\013\n\003key\030\004 \001(\t2\201\001\n\013DataSto" +
-      "rage\0226\n\nuploadFile\022\023.grpc.UploadRequest\032" +
-      "\021.grpc.FileContent0\001\022:\n\014downloadFile\022\025.g" +
-      "rpc.DownloadRequest\032\021.grpc.FileContent0\001" +
-      "B\002P\001b\006proto3"
+      "ntent\030\003 \001(\014\022\013\n\003seg\030\004 \001(\003\022\024\n\014total_chunks" +
+      "\030\005 \001(\005\"G\n\017DownloadRequest\022\020\n\010fileName\030\001 " +
+      "\001(\t\022\017\n\007fileKey\030\002 \001(\t\022\021\n\tchunkFlag\030\003 \001(\005\"" +
+      "^\n\013FileContent\022\020\n\010fileName\030\001 \001(\t\022\023\n\013file" +
+      "Content\030\002 \001(\014\022\016\n\006status\030\003 \001(\t\022\013\n\003key\030\004 \001" +
+      "(\t\022\013\n\003seg\030\005 \001(\0032\201\001\n\013DataStorage\0226\n\nuploa" +
+      "dFile\022\023.grpc.UploadRequest\032\021.grpc.FileCo" +
+      "ntent(\001\022:\n\014downloadFile\022\025.grpc.DownloadR" +
+      "equest\032\021.grpc.FileContent0\001B\002P\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -59,19 +60,19 @@ public final class Grpc {
     internal_static_grpc_UploadRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_grpc_UploadRequest_descriptor,
-        new java.lang.String[] { "FileName", "FileKey", "FileContent", });
+        new java.lang.String[] { "FileName", "FileKey", "FileContent", "Seg", "TotalChunks", });
     internal_static_grpc_DownloadRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_grpc_DownloadRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_grpc_DownloadRequest_descriptor,
-        new java.lang.String[] { "FileName", "FileKey", });
+        new java.lang.String[] { "FileName", "FileKey", "ChunkFlag", });
     internal_static_grpc_FileContent_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_grpc_FileContent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_grpc_FileContent_descriptor,
-        new java.lang.String[] { "FileName", "FileContent", "Status", "Key", });
+        new java.lang.String[] { "FileName", "FileContent", "Status", "Key", "Seg", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

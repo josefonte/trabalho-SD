@@ -131,6 +131,28 @@ private static final long serialVersionUID = 0L;
     return fileContent_;
   }
 
+  public static final int SEG_FIELD_NUMBER = 4;
+  private long seg_ = 0L;
+  /**
+   * <code>int64 seg = 4;</code>
+   * @return The seg.
+   */
+  @java.lang.Override
+  public long getSeg() {
+    return seg_;
+  }
+
+  public static final int TOTAL_CHUNKS_FIELD_NUMBER = 5;
+  private int totalChunks_ = 0;
+  /**
+   * <code>int32 total_chunks = 5;</code>
+   * @return The totalChunks.
+   */
+  @java.lang.Override
+  public int getTotalChunks() {
+    return totalChunks_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -154,6 +176,12 @@ private static final long serialVersionUID = 0L;
     if (!fileContent_.isEmpty()) {
       output.writeBytes(3, fileContent_);
     }
+    if (seg_ != 0L) {
+      output.writeInt64(4, seg_);
+    }
+    if (totalChunks_ != 0) {
+      output.writeInt32(5, totalChunks_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -172,6 +200,14 @@ private static final long serialVersionUID = 0L;
     if (!fileContent_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(3, fileContent_);
+    }
+    if (seg_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(4, seg_);
+    }
+    if (totalChunks_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, totalChunks_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -194,6 +230,10 @@ private static final long serialVersionUID = 0L;
         .equals(other.getFileKey())) return false;
     if (!getFileContent()
         .equals(other.getFileContent())) return false;
+    if (getSeg()
+        != other.getSeg()) return false;
+    if (getTotalChunks()
+        != other.getTotalChunks()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -211,6 +251,11 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getFileKey().hashCode();
     hash = (37 * hash) + FILECONTENT_FIELD_NUMBER;
     hash = (53 * hash) + getFileContent().hashCode();
+    hash = (37 * hash) + SEG_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getSeg());
+    hash = (37 * hash) + TOTAL_CHUNKS_FIELD_NUMBER;
+    hash = (53 * hash) + getTotalChunks();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -345,6 +390,8 @@ private static final long serialVersionUID = 0L;
       fileName_ = "";
       fileKey_ = "";
       fileContent_ = com.google.protobuf.ByteString.EMPTY;
+      seg_ = 0L;
+      totalChunks_ = 0;
       return this;
     }
 
@@ -386,6 +433,12 @@ private static final long serialVersionUID = 0L;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.fileContent_ = fileContent_;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.seg_ = seg_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.totalChunks_ = totalChunks_;
       }
     }
 
@@ -446,6 +499,12 @@ private static final long serialVersionUID = 0L;
       if (other.getFileContent() != com.google.protobuf.ByteString.EMPTY) {
         setFileContent(other.getFileContent());
       }
+      if (other.getSeg() != 0L) {
+        setSeg(other.getSeg());
+      }
+      if (other.getTotalChunks() != 0) {
+        setTotalChunks(other.getTotalChunks());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -487,6 +546,16 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 32: {
+              seg_ = input.readInt64();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
+            case 40: {
+              totalChunks_ = input.readInt32();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 40
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -676,6 +745,70 @@ private static final long serialVersionUID = 0L;
     public Builder clearFileContent() {
       bitField0_ = (bitField0_ & ~0x00000004);
       fileContent_ = getDefaultInstance().getFileContent();
+      onChanged();
+      return this;
+    }
+
+    private long seg_ ;
+    /**
+     * <code>int64 seg = 4;</code>
+     * @return The seg.
+     */
+    @java.lang.Override
+    public long getSeg() {
+      return seg_;
+    }
+    /**
+     * <code>int64 seg = 4;</code>
+     * @param value The seg to set.
+     * @return This builder for chaining.
+     */
+    public Builder setSeg(long value) {
+
+      seg_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 seg = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearSeg() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      seg_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private int totalChunks_ ;
+    /**
+     * <code>int32 total_chunks = 5;</code>
+     * @return The totalChunks.
+     */
+    @java.lang.Override
+    public int getTotalChunks() {
+      return totalChunks_;
+    }
+    /**
+     * <code>int32 total_chunks = 5;</code>
+     * @param value The totalChunks to set.
+     * @return This builder for chaining.
+     */
+    public Builder setTotalChunks(int value) {
+
+      totalChunks_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 total_chunks = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearTotalChunks() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      totalChunks_ = 0;
       onChanged();
       return this;
     }

@@ -159,8 +159,8 @@ loop(Map) ->
                     FilteredFiles = maps:map(
                         fun(_File, Ratings) ->
                             case maps:find(User, Ratings) of
-                                {ok, Rating} -> #{ User => Rating };
-                                error -> #{}
+                                {ok, Rating} -> integer_to_list(Rating);
+                                error -> "null"
                             end
                         end, Files),
                     From ! {ok, FilteredFiles, ?MODULE},
