@@ -6,13 +6,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ORSetCRDT {
     VersionVector cc;
+    String name;
     HashMap<String, HashSet<Dot>> m;
 
     ReentrantLock lock = new ReentrantLock();
 
-    public ORSetCRDT(){
+    public ORSetCRDT(String name){
         this.cc = new VersionVector();
         this.m = new HashMap<>();
+        this.name = name;
     }
 
     public ORSetCRDT(VersionVector cc, HashMap<String, HashSet<Dot>> m){
@@ -22,10 +24,13 @@ public class ORSetCRDT {
 
     public HashSet<String> elements(){
         HashSet<String> elements = new HashSet<>();
+        lock.lock();
         for (String elem : m.keySet()){
             elements.add(elem);
         }
+        lock.unlock();
         return elements;
+
     }
 
 
@@ -100,6 +105,10 @@ public class ORSetCRDT {
         }
         // m = c ∪ c′
         cc.update(cc_m);
+        // communicate to the client if there were changes
+        if (!new_m.equals(m)){
+            System.out.println("Novo conjunto de " + this.name+" : " + new_m.keySet());
+        }
         m = new_m;
         System.out.println("New m: " + m);
         lock.unlock();
@@ -122,7 +131,7 @@ public class ORSetCRDT {
     }
 
     public static ORSetCRDT deserialize(String orSetString){
-        ORSetCRDT orSet = new ORSetCRDT();
+        ORSetCRDT orSet = new ORSetCRDT(this.name);
         String[] contents = orSetString.split("#");
         if (!contents[0].equals("")){
             String[] entries = contents[0].split("\\.");

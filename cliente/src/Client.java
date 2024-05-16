@@ -280,8 +280,8 @@ public class Client {
             // (NUNO)
             // out.println("get_album_info,"+album);
             // String response = in.readLine();
-            ORSetCRDT utilizadores = new ORSetCRDT();
-            ORSetCRDT ficheiros = new ORSetCRDT();
+            ORSetCRDT utilizadores = new ORSetCRDT("utilizadores");
+            ORSetCRDT ficheiros = new ORSetCRDT("ficheiros");
             HashMap<String,String> rates = new HashMap<>();
 
 
