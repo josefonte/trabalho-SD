@@ -3,8 +3,8 @@ package org.example;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 
-public class Server {
-    public static void main(String[] args) throws Exception {
+public class Server extends GreeterGrpcImplBase  {
+   /* public static void main(String[] args) throws Exception {
         var ss = ServerSocketChannel.open();
         ss.bind(new InetSocketAddress(12345));
         var loop = new MainLoop();
@@ -14,5 +14,8 @@ public class Server {
             s_obs.subscribe(bb -> System.out.println("received: "+bb.remaining()));
         });
         loop.run();
-    }
+    }*/
+
+
+    public 
 }
