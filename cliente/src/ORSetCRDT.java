@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ORSetCRDT {
@@ -20,13 +17,13 @@ public class ORSetCRDT {
         this.m = m;
     }
 
-    public HashSet<String> elements(){
-        HashSet<String> elements = new HashSet<>();
-        for (String elem : m.keySet()){
-            elements.add(elem);
-        }
-        return elements;
-    }
+//    public HashSet<String> elements(){
+//        HashSet<String> elements = new HashSet<>();
+//        for (String elem : m.keySet()){
+//            elements.add(elem);
+//        }
+//        return elements;
+//    }
 
 
     public void add(String name, String pid) {
@@ -41,18 +38,17 @@ public class ORSetCRDT {
         lock.unlock();
     }
 
-
+    public void simpleAdd(String name) {
+        lock.lock();
+        m.put(name, new HashSet<>());
+        lock.unlock();
+    }
 
     public void remove(String name, String pid) {
         lock.lock();
         m.remove(name);
         lock.unlock();
     }
-
-
-
-
-
 
     public void join(ORSetCRDT other){
         VersionVector cc_m = other.cc;
@@ -120,6 +116,21 @@ public class ORSetCRDT {
         sb.append(cc.serializeCausalContext());
         return sb.toString();
     }
+
+    // ["name1"|"name2"|"name3"]
+    public String serializeNames() {
+        StringJoiner joiner = new StringJoiner("|");
+        for (String name : m.keySet()) {
+            joiner.add(name);
+        }
+        return "[" + joiner + "]";
+    }
+
+    // {file2=>{nuno=>10}|file3=>{nuno=>4}}
+//    public String serializeFiles(){
+//        StringJoiner joiner = new StringJoiner("|");
+//
+//    }
 
     public static ORSetCRDT deserialize(String orSetString){
         ORSetCRDT orSet = new ORSetCRDT();

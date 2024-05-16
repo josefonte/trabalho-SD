@@ -275,8 +275,7 @@ userAuth(Socket,User) ->
                             user_manager ! {{get_album_users, Album}, self()},
                             receive
                                 {ok, Users,user_manager} ->
-                                    % UsersMsg = io_lib:format("Users: ~p\n", [sets:to_list(Users)]),
-                                    UsersMsg = io_lib:format("~p\n", [Users]),
+                                    UsersMsg = io_lib:format("~p\n", [sets:to_list(Users)]),
                                     gen_tcp:send(Socket, UsersMsg);
                                 {album_not_found, _} ->
                                     gen_tcp:send(Socket, "Album not found\n")
@@ -285,9 +284,7 @@ userAuth(Socket,User) ->
                             receive
                                 {ok, Files,file_manager} ->
                                     io:format("Users: ~p~n", [Files]),
-                                    % FilesList = [File || {File, Ratings} <- maps:to_list(Files), Ratings =/= #{}],
                                     FilesMsg = io_lib:format("~p\n", [Files]),
-                                    % FilesMsg = io_lib:format("Files: ~p\n", [FilesList]),
                                     gen_tcp:send(Socket, FilesMsg);
                                 {album_not_found, _} ->
                                     gen_tcp:send(Socket, "Album not found\n")
