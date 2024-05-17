@@ -34,19 +34,31 @@ import node.proto.RemoveRequest;
 import node.proto.RemoveResponse;
 public class FakeClient {
 
+    private static  String  filesPath = "./final/src/main/java/psd/trabalho/files/";
+    private static String  downloadsPath = "./final/src/main/java/psd/trabalho/client_downloads/";
+
     public static void main(String[] args) throws IOException, InterruptedException {
 
         fileUpload("localhost",8000,"eliseu.jpg");
         fileUpload("localhost",8000,"marega.jpg");
+        fileUpload("localhost",8000,"esgaio.jpg");
         fileUpload("localhost",8000,"paulinho.jpeg");
         fileUpload("localhost",8000,"picanhas.jpg");
         fileUpload("localhost",8000,"video.mp4");
         fileUpload("localhost",8000,"zaidu.jpeg");
+        fileUpload("localhost",8000,"banza.jpg");
+        fileUpload("localhost",8000,"vitinha.jpg");
+        fileUpload("localhost",8000,"felix.jpeg");
 
-        downloadFile("localhost",8000,"paulinho.jpeg");
-        downloadFile("localhost",8000,"marega.jpg");
+        //removeFile("localhost",8000,"paulinho.jpeg");
 
-        removeFile("localhost",8000,"picanhas.jpg");
+
+       // downloadFile("localhost",8000,"eliseu.jpg");
+       // downloadFile("localhost",8000,"marega.jpg");
+       // downloadFile("localhost",8000,"paulinho.jpeg");
+       // downloadFile("localhost",8000,"picanhas.jpg");
+       // downloadFile("localhost",8000,"video.mp4");
+
 
 
     }
@@ -85,7 +97,7 @@ public class FakeClient {
                             System.out.println("#### File Download started -> " + chunk.getFileName());
 
                             try {
-                                File newFile = new File("./final/src/main/java/psd/trabalho/client_downloads/" + chunk.getFileName());
+                                File newFile = new File(downloadsPath + chunk.getFileName());
                                 file.set(newFile);
                                 fileOutputStream.set(new FileOutputStream(String.valueOf(file)));
 
@@ -125,9 +137,11 @@ public class FakeClient {
         }
         else {
             System.out.println("Error downloading file: " + response.getFileName());
-            System.out.println("Error: " + response.getErrorMessage() + " | search in " + response.getNodeIp() + ":" + response.getNodePort());
-            channel.shutdown();
-            downloadFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+            if(!response.getNodeIp().isEmpty() && !response.getNodePort().isEmpty()){
+                System.out.println("Error: " + response.getErrorMessage() + " | search in " + response.getNodeIp() + ":" + response.getNodePort());
+                channel.shutdown();
+                downloadFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+            }
         }
 
         channel.shutdown();
@@ -151,7 +165,7 @@ public class FakeClient {
         UploadFileResponse auth = stub.uploadFile(req).blockingGet();
 
         if(auth.getSuccess()){
-            File file = new File("./final/src/main/java/psd/trabalho/files/" + fileName);
+            File file = new File(filesPath + fileName);
 
             try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 Flowable<UploadFileRequestTransfer> requestFlowable = Flowable.generate(emitter -> {
@@ -179,9 +193,11 @@ public class FakeClient {
                         });}}
         else {
             System.out.println("Error uploading file: " + auth.getFileName());
-            System.out.println("Error: " + auth.getErrorMessage() + " | upload to " + auth.getNodeIp() + ":" + auth.getNodePort());
-            channel.shutdown();
-            fileUpload(auth.getNodeIp(), Integer.parseInt(auth.getNodePort()), fileName);
+            if(!auth.getNodeIp().isEmpty() && !auth.getNodePort().isEmpty()){
+                System.out.println("Error: " + auth.getErrorMessage() + " | search in " + auth.getNodeIp() + ":" + auth.getNodePort());
+                channel.shutdown();
+                fileUpload(auth.getNodeIp(), Integer.parseInt(auth.getNodePort()), fileName);
+            }
         }
 
         channel.shutdown();
@@ -200,9 +216,12 @@ public class FakeClient {
             System.out.println("File removed successfully");
         }
         else {
-            System.out.println("Error removing file");
-            channel.shutdown();
-            removeFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+            System.out.println("Error removing file: ");
+            if(!response.getNodeIp().isEmpty() && !response.getNodePort().isEmpty()){
+                System.out.println("Search in " + response.getNodeIp() + ":" + response.getNodePort());
+                channel.shutdown();
+                removeFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+            }
         }
         channel.shutdown();
     }
@@ -214,7 +233,7 @@ public class FakeClient {
         Single<PingRequest> req = Single.just(PingRequest.newBuilder().setNodeIp("localhost").setNodePort("0000").setMessage("PING").build());
 
         System.out.println("Sending ping");
-        stub.pingPong(req).blockingSubscribe(r->{
+        stub.ping(req).blockingSubscribe(r->{
             System.out.println("Response: " + r.getMessage() + " from " + r.getNodeIp() + ":" + r.getNodePort());
         });
     }

@@ -95,12 +95,12 @@ public final class Rx3DataServerNodeGrpc {
                 }, getCallOptions());
         }
 
-        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(io.reactivex.rxjava3.core.Single<node.proto.PingRequest> rxRequest) {
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> ping(io.reactivex.rxjava3.core.Single<node.proto.PingRequest> rxRequest) {
             return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(rxRequest,
                 new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.PingRequest, io.grpc.stub.StreamObserver<node.proto.PingResponse>>() {
                     @java.lang.Override
                     public void accept(node.proto.PingRequest request, io.grpc.stub.StreamObserver<node.proto.PingResponse> observer) {
-                        delegateStub.pingPong(request, observer);
+                        delegateStub.ping(request, observer);
                     }
                 }, getCallOptions());
         }
@@ -155,12 +155,12 @@ public final class Rx3DataServerNodeGrpc {
                 }, getCallOptions());
         }
 
-        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(node.proto.PingRequest rxRequest) {
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> ping(node.proto.PingRequest rxRequest) {
             return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(io.reactivex.rxjava3.core.Single.just(rxRequest),
                 new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.PingRequest, io.grpc.stub.StreamObserver<node.proto.PingResponse>>() {
                     @java.lang.Override
                     public void accept(node.proto.PingRequest request, io.grpc.stub.StreamObserver<node.proto.PingResponse> observer) {
-                        delegateStub.pingPong(request, observer);
+                        delegateStub.ping(request, observer);
                     }
                 }, getCallOptions());
         }
@@ -214,11 +214,11 @@ public final class Rx3DataServerNodeGrpc {
             throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
         }
 
-        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(node.proto.PingRequest request) {
-            return pingPong(io.reactivex.rxjava3.core.Single.just(request));
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> ping(node.proto.PingRequest request) {
+            return ping(io.reactivex.rxjava3.core.Single.just(request));
         }
 
-        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(io.reactivex.rxjava3.core.Single<node.proto.PingRequest> request) {
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> ping(io.reactivex.rxjava3.core.Single<node.proto.PingRequest> request) {
             throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
         }
 
@@ -267,12 +267,12 @@ public final class Rx3DataServerNodeGrpc {
                                             node.proto.RemoveResponse>(
                                             this, METHODID_REMOVE_FILE)))
                     .addMethod(
-                            node.proto.DataServerNodeGrpc.getPingPongMethod(),
+                            node.proto.DataServerNodeGrpc.getPingMethod(),
                             asyncUnaryCall(
                                     new MethodHandlers<
                                             node.proto.PingRequest,
                                             node.proto.PingResponse>(
-                                            this, METHODID_PING_PONG)))
+                                            this, METHODID_PING)))
                     .build();
         }
 
@@ -292,7 +292,7 @@ public final class Rx3DataServerNodeGrpc {
     public static final int METHODID_UPLOAD_FILE = 3;
     public static final int METHODID_UPLOAD_FILE_TRANSFER = 4;
     public static final int METHODID_REMOVE_FILE = 5;
-    public static final int METHODID_PING_PONG = 6;
+    public static final int METHODID_PING = 6;
 
     private static final class MethodHandlers<Req, Resp> implements
             io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -361,13 +361,13 @@ public final class Rx3DataServerNodeGrpc {
                                 }
                             }, serviceImpl::onErrorMap);
                     break;
-                case METHODID_PING_PONG:
+                case METHODID_PING:
                     com.salesforce.rx3grpc.stub.ServerCalls.oneToOne((node.proto.PingRequest) request,
                             (io.grpc.stub.StreamObserver<node.proto.PingResponse>) responseObserver,
                             new com.salesforce.reactivegrpc.common.Function<node.proto.PingRequest, io.reactivex.rxjava3.core.Single<node.proto.PingResponse>>() {
                                 @java.lang.Override
                                 public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> apply(node.proto.PingRequest single) {
-                                    return serviceImpl.pingPong(single);
+                                    return serviceImpl.ping(single);
                                 }
                             }, serviceImpl::onErrorMap);
                     break;

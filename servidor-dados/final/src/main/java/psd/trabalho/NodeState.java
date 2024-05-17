@@ -1,5 +1,6 @@
 package psd.trabalho;
 
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -62,6 +63,10 @@ public class NodeState {
     }
     public void removeStorage(byte[] key) {
         if (this.storage.containsKey(key)){
+            File file = new File(storage.get(key));
+            if (file.exists()) {
+                file.delete();
+            }
             this.storage.remove(key);
         }
     }
@@ -108,9 +113,10 @@ public class NodeState {
         return clone;
     }
     public void printState() {
-        System.out.print("#### KEY: " + key + "\n#### IP_ADD: " + ip_address + " | IP_PORT : " + ip_port + "\n");
+        System.out.print("\n\n########### NODE STATE" +
+                "\n# KEY: " + key + "\n# IP_ADD: " + ip_address + " | IP_PORT : " + ip_port + "\n");
 
-        System.out.println("#### NODES");
+        System.out.println("# NODES");
         for ( byte[] node : ring.keySet()){
             try {
                 System.out.println(ring.get(node).getKeyString());
@@ -118,10 +124,11 @@ public class NodeState {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println("#### STORAGE");
+        System.out.println("# STORAGE");
 
         for (byte[] key : storage.keySet()){
             System.out.println(key + " -> " + storage.get(key) );
         }
+        System.out.println("###########\n\n");
     }
 }

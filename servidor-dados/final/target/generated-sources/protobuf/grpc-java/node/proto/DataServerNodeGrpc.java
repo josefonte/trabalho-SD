@@ -202,34 +202,34 @@ public final class DataServerNodeGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<node.proto.PingRequest,
-      node.proto.PingResponse> getPingPongMethod;
+      node.proto.PingResponse> getPingMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "PingPong",
+      fullMethodName = SERVICE_NAME + '/' + "Ping",
       requestType = node.proto.PingRequest.class,
       responseType = node.proto.PingResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<node.proto.PingRequest,
-      node.proto.PingResponse> getPingPongMethod() {
-    io.grpc.MethodDescriptor<node.proto.PingRequest, node.proto.PingResponse> getPingPongMethod;
-    if ((getPingPongMethod = DataServerNodeGrpc.getPingPongMethod) == null) {
+      node.proto.PingResponse> getPingMethod() {
+    io.grpc.MethodDescriptor<node.proto.PingRequest, node.proto.PingResponse> getPingMethod;
+    if ((getPingMethod = DataServerNodeGrpc.getPingMethod) == null) {
       synchronized (DataServerNodeGrpc.class) {
-        if ((getPingPongMethod = DataServerNodeGrpc.getPingPongMethod) == null) {
-          DataServerNodeGrpc.getPingPongMethod = getPingPongMethod =
+        if ((getPingMethod = DataServerNodeGrpc.getPingMethod) == null) {
+          DataServerNodeGrpc.getPingMethod = getPingMethod =
               io.grpc.MethodDescriptor.<node.proto.PingRequest, node.proto.PingResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PingPong"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "Ping"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   node.proto.PingRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   node.proto.PingResponse.getDefaultInstance()))
-              .setSchemaDescriptor(new DataServerNodeMethodDescriptorSupplier("PingPong"))
+              .setSchemaDescriptor(new DataServerNodeMethodDescriptorSupplier("Ping"))
               .build();
         }
       }
     }
-    return getPingPongMethod;
+    return getPingMethod;
   }
 
   /**
@@ -324,9 +324,9 @@ public final class DataServerNodeGrpc {
 
     /**
      */
-    default void pingPong(node.proto.PingRequest request,
+    default void ping(node.proto.PingRequest request,
         io.grpc.stub.StreamObserver<node.proto.PingResponse> responseObserver) {
-      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPingPongMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPingMethod(), responseObserver);
     }
   }
 
@@ -407,10 +407,10 @@ public final class DataServerNodeGrpc {
 
     /**
      */
-    public void pingPong(node.proto.PingRequest request,
+    public void ping(node.proto.PingRequest request,
         io.grpc.stub.StreamObserver<node.proto.PingResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
-          getChannel().newCall(getPingPongMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getPingMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -468,9 +468,9 @@ public final class DataServerNodeGrpc {
 
     /**
      */
-    public node.proto.PingResponse pingPong(node.proto.PingRequest request) {
+    public node.proto.PingResponse ping(node.proto.PingRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getPingPongMethod(), getCallOptions(), request);
+          getChannel(), getPingMethod(), getCallOptions(), request);
     }
   }
 
@@ -524,10 +524,10 @@ public final class DataServerNodeGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<node.proto.PingResponse> pingPong(
+    public com.google.common.util.concurrent.ListenableFuture<node.proto.PingResponse> ping(
         node.proto.PingRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
-          getChannel().newCall(getPingPongMethod(), getCallOptions()), request);
+          getChannel().newCall(getPingMethod(), getCallOptions()), request);
     }
   }
 
@@ -536,7 +536,7 @@ public final class DataServerNodeGrpc {
   private static final int METHODID_DOWNLOAD_FILE_TRANSFER = 2;
   private static final int METHODID_UPLOAD_FILE = 3;
   private static final int METHODID_REMOVE_FILE = 4;
-  private static final int METHODID_PING_PONG = 5;
+  private static final int METHODID_PING = 5;
   private static final int METHODID_UPLOAD_FILE_TRANSFER = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
@@ -576,8 +576,8 @@ public final class DataServerNodeGrpc {
           serviceImpl.removeFile((node.proto.RemoveRequest) request,
               (io.grpc.stub.StreamObserver<node.proto.RemoveResponse>) responseObserver);
           break;
-        case METHODID_PING_PONG:
-          serviceImpl.pingPong((node.proto.PingRequest) request,
+        case METHODID_PING:
+          serviceImpl.ping((node.proto.PingRequest) request,
               (io.grpc.stub.StreamObserver<node.proto.PingResponse>) responseObserver);
           break;
         default:
@@ -644,12 +644,12 @@ public final class DataServerNodeGrpc {
               node.proto.RemoveResponse>(
                 service, METHODID_REMOVE_FILE)))
         .addMethod(
-          getPingPongMethod(),
+          getPingMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               node.proto.PingRequest,
               node.proto.PingResponse>(
-                service, METHODID_PING_PONG)))
+                service, METHODID_PING)))
         .build();
   }
 
@@ -704,7 +704,7 @@ public final class DataServerNodeGrpc {
               .addMethod(getUploadFileMethod())
               .addMethod(getUploadFileTransferMethod())
               .addMethod(getRemoveFileMethod())
-              .addMethod(getPingPongMethod())
+              .addMethod(getPingMethod())
               .build();
         }
       }

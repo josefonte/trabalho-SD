@@ -15,7 +15,7 @@ service DataServerNode {
   rpc UploadFileTransfer (stream UploadFileRequestTransfer) returns (UploadFileResponseTransfer) {}
 
   rpc RemoveFile (RemoveRequest) returns (RemoveResponse) {}
-  rpc PingPong (PingRequest) returns (PingResponse) {}
+  rpc Ping (PingRequest) returns (PingResponse) {}
 }
 
 /**
