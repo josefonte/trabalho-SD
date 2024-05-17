@@ -44,6 +44,8 @@ public class FakeClient {
 
         downloadFile(stub,"paulinho.jpeg");
 
+        removeFile(stub,"eliseu.jpg");
+
         channel.shutdown();
     }
 
@@ -163,6 +165,21 @@ public class FakeClient {
         }
 
 
+    }
+
+    private static void removeFile(node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub stub, String fileName) {
+        Single<node.proto.RemoveRequest> req = Single.just(node.proto.RemoveRequest.newBuilder().setFileName(fileName).build());
+
+        System.out.println("Sending remove request");
+
+        node.proto.RemoveResponse response = stub.removeFile(req).blockingGet();
+
+        if (response.getSuccess()) {
+            System.out.println("File removed successfully");
+        }
+        else {
+            System.out.println("Error removing file");
+          }
     }
 
     private static void ping(node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub  stub){
