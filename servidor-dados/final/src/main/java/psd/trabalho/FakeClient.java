@@ -39,11 +39,11 @@ public class FakeClient {
         node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub stub = node.proto.Rx3DataServerNodeGrpc.newRxStub(channel);
 
         fileUpload(stub,"eliseu.jpg");
+        fileUpload(stub,"marega.jpg");
+        fileUpload(stub,"paulinho.jpeg");
+        fileUpload(stub,"picanhas.jpg");
         fileUpload(stub,"video.mp4");
-
-
         downloadFile(stub,"paulinho.jpeg");
-
         removeFile(stub,"eliseu.jpg");
 
         channel.shutdown();
@@ -64,13 +64,12 @@ public class FakeClient {
         DownloadFileResponse response = stub.downloadFile(req).blockingGet();
 
         if (response.getSuccess()) {
-            System.out.println("Download permission granted");
             stub.downloadFileTransfer(req)
                     .onBackpressureBuffer()
                     .doOnNext(chunk -> {
                         if (isFirstChunk.get()) {
-                            System.out.println("#### File Download started");
-                            System.out.println("First Chunk -> " + chunk.getFileName());
+                            System.out.println("#### File Download started -> " + chunk.getFileName());
+
                             try {
                                 File newFile = new File("./final/src/main/java/psd/trabalho/files_client/" + chunk.getFileName());
                                 file.set(newFile);
@@ -149,7 +148,7 @@ public class FakeClient {
                                 .build()); // Emit next chunk
                     }
                 });
-                System.out.println("Starting file transfer");
+                System.out.println("### Starting file transfer -> " + file.getName() );
                 stub.uploadFileTransfer(requestFlowable).onErrorComplete(
                                 throwable -> {
                                     System.err.println("Error uploading file: " + throwable.getMessage());
@@ -161,7 +160,7 @@ public class FakeClient {
                         });}}
         else {
             System.out.println("Error uploading file: " + auth.getFileName());
-            System.out.println("Error: " + auth.getErrorMessage() + " from " + auth.getNodeIp() + ":" + auth.getNodePort());
+            System.out.println("Error: " + auth.getErrorMessage() + " | " + auth.getNodeIp() + ":" + auth.getNodePort());
         }
 
 

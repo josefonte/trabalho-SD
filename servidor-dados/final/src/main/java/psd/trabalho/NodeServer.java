@@ -298,7 +298,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
                     }
                     totalFileSize.addAndGet(chunk.getFileData().size());
                     chunkBuffer.add(chunk);
-                    if (chunkBuffer.size() == 40) {
+                    if (chunkBuffer.size() == 100) {
                         writeBufferToFile(chunkBuffer, fileOutputStream.get());
                         chunkBuffer.clear();
                     }

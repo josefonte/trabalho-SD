@@ -4,27 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="upload and download almost done">
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/video.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponseTransfer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponseTransferOrBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequestTransfer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequestTransferOrBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponseTransfer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponseTransferOrBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="remove file done too">
       <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/src/main/proto/Node.proto" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/proto/Node.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponseOrBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponseOrBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequestOrBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequestOrBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponseOrBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponseOrBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/eliseu.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +164,7 @@
       <workItem from="1715776404285" duration="25710000" />
       <workItem from="1715818822094" duration="13883000" />
       <workItem from="1715884274271" duration="124000" />
-      <workItem from="1715884460112" duration="33566000" />
+      <workItem from="1715884460112" duration="33963000" />
     </task>
     <task id="LOCAL-00001" summary="final servidor de dados - launch and connection between servers working.">
       <option name="closed" value="true" />
@@ -199,7 +182,23 @@
       <option name="project" value="LOCAL" />
       <updated>1715912721202</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="upload and download done very nice very cool">
+      <option name="closed" value="true" />
+      <created>1715924058690</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1715924058690</updated>
+    </task>
+    <task id="LOCAL-00004" summary="remove file done too">
+      <option name="closed" value="true" />
+      <created>1715924192347</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1715924192347</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +219,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="final servidor de dados - launch and connection between servers working." />
     <MESSAGE value="upload and download almost done" />
-    <option name="LAST_COMMIT_MESSAGE" value="upload and download almost done" />
+    <MESSAGE value="upload and download done very nice very cool" />
+    <MESSAGE value="remove file done too" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove file done too" />
   </component>
 </project>
