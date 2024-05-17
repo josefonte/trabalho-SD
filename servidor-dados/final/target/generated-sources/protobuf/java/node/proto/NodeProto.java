@@ -25,6 +25,46 @@ public final class NodeProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_node_proto_NewNodeResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_DownloadFileRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_DownloadFileRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_DownloadFileResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_DownloadFileResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_UploadFileRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_UploadFileRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_UploadFileResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_UploadFileResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_RemoveRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_RemoveRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_RemoveResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_RemoveResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_PingRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_PingRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_node_proto_PingResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_node_proto_PingResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -37,10 +77,32 @@ public final class NodeProto {
       "\n\nNode.proto\022\nnode.proto\";\n\016NewNodeReque" +
       "st\022\023\n\013node_ip_add\030\001 \001(\t\022\024\n\014node_ip_port\030" +
       "\002 \001(\t\"<\n\017NewNodeResponse\022\023\n\013node_ip_add\030" +
-      "\001 \001(\t\022\024\n\014node_ip_port\030\002 \001(\t2V\n\016DataServe" +
-      "rNode\022D\n\007NewNode\022\032.node.proto.NewNodeReq" +
-      "uest\032\033.node.proto.NewNodeResponse\"\000B\031\n\nn" +
-      "ode.protoB\tNodeProtoP\001b\006proto3"
+      "\001 \001(\t\022\024\n\014node_ip_port\030\002 \001(\t\"(\n\023DownloadF" +
+      "ileRequest\022\021\n\tfile_name\030\001 \001(\t\"\210\001\n\024Downlo" +
+      "adFileResponse\022\021\n\tfile_data\030\001 \001(\014\022\017\n\007suc" +
+      "cess\030\002 \001(\010\022\025\n\rerror_message\030\003 \001(\t\022\017\n\007nod" +
+      "e_ip\030\004 \001(\t\022\021\n\tnode_port\030\005 \001(\t\022\021\n\tfile_na" +
+      "me\030\006 \001(\t\"9\n\021UploadFileRequest\022\021\n\tfile_na" +
+      "me\030\001 \001(\t\022\021\n\tfile_data\030\002 \001(\014\"\\\n\022UploadFil" +
+      "eResponse\022\021\n\tfile_name\030\001 \001(\t\022\017\n\007success\030" +
+      "\002 \001(\010\022\017\n\007node_ip\030\003 \001(\t\022\021\n\tnode_port\030\004 \001(" +
+      "\t\"\"\n\rRemoveRequest\022\021\n\tfile_name\030\001 \001(\t\"E\n" +
+      "\016RemoveResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007node" +
+      "_ip\030\002 \001(\t\022\021\n\tnode_port\030\003 \001(\t\"B\n\013PingRequ" +
+      "est\022\017\n\007message\030\001 \001(\t\022\017\n\007node_ip\030\002 \001(\t\022\021\n" +
+      "\tnode_port\030\003 \001(\t\"C\n\014PingResponse\022\017\n\007mess" +
+      "age\030\001 \001(\t\022\017\n\007node_ip\030\002 \001(\t\022\021\n\tnode_port\030" +
+      "\003 \001(\t2\206\003\n\016DataServerNode\022D\n\007NewNode\022\032.no" +
+      "de.proto.NewNodeRequest\032\033.node.proto.New" +
+      "NodeResponse\"\000\022U\n\014DownloadFile\022\037.node.pr" +
+      "oto.DownloadFileRequest\032 .node.proto.Dow" +
+      "nloadFileResponse\"\0000\001\022O\n\nUploadFile\022\035.no" +
+      "de.proto.UploadFileRequest\032\036.node.proto." +
+      "UploadFileResponse\"\000(\001\022E\n\nRemoveFile\022\031.n" +
+      "ode.proto.RemoveRequest\032\032.node.proto.Rem" +
+      "oveResponse\"\000\022?\n\010PingPong\022\027.node.proto.P" +
+      "ingRequest\032\030.node.proto.PingResponse\"\000B\031" +
+      "\n\nnode.protoB\tNodeProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -58,6 +120,54 @@ public final class NodeProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_node_proto_NewNodeResponse_descriptor,
         new java.lang.String[] { "NodeIpAdd", "NodeIpPort", });
+    internal_static_node_proto_DownloadFileRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_node_proto_DownloadFileRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_DownloadFileRequest_descriptor,
+        new java.lang.String[] { "FileName", });
+    internal_static_node_proto_DownloadFileResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_node_proto_DownloadFileResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_DownloadFileResponse_descriptor,
+        new java.lang.String[] { "FileData", "Success", "ErrorMessage", "NodeIp", "NodePort", "FileName", });
+    internal_static_node_proto_UploadFileRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_node_proto_UploadFileRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_UploadFileRequest_descriptor,
+        new java.lang.String[] { "FileName", "FileData", });
+    internal_static_node_proto_UploadFileResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_node_proto_UploadFileResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_UploadFileResponse_descriptor,
+        new java.lang.String[] { "FileName", "Success", "NodeIp", "NodePort", });
+    internal_static_node_proto_RemoveRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_node_proto_RemoveRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_RemoveRequest_descriptor,
+        new java.lang.String[] { "FileName", });
+    internal_static_node_proto_RemoveResponse_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_node_proto_RemoveResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_RemoveResponse_descriptor,
+        new java.lang.String[] { "Success", "NodeIp", "NodePort", });
+    internal_static_node_proto_PingRequest_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_node_proto_PingRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_PingRequest_descriptor,
+        new java.lang.String[] { "Message", "NodeIp", "NodePort", });
+    internal_static_node_proto_PingResponse_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_node_proto_PingResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_node_proto_PingResponse_descriptor,
+        new java.lang.String[] { "Message", "NodeIp", "NodePort", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

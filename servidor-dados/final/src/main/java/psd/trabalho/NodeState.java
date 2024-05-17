@@ -61,7 +61,9 @@ public class NodeState {
         this.storage.put(key, value);
     }
     public void removeStorage(byte[] key) {
-        this.storage.remove(key);
+        if (this.storage.containsKey(key)){
+            this.storage.remove(key);
+        }
     }
 
 
@@ -117,6 +119,9 @@ public class NodeState {
             }
         }
         System.out.println("#### STORAGE");
-        System.out.println(storage.keySet());
+
+        for (byte[] key : storage.keySet()){
+            System.out.println(key + " -> " + storage.get(key) );
+        }
     }
 }

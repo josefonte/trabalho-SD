@@ -5,35 +5,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Practice/practice-reactiveGRPC/src/proto/Hello.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/DataServerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/GrpcClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/GrpcServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/HashFunction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeLauncher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/Pair.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/VirtualNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/node_start.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/src/main/proto/Node.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NewNodeRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NewNodeRequestOrBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NewNodeResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NewNodeResponseOrBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FakeClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/eliseu.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/marega.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/paulinho.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/picanhas.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/video.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/zaidu.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/eliseu.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/marega.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/paulinho.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileRequestOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/DownloadFileResponseOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/PingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/PingRequestOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/PingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/PingResponseOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/RemoveRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/RemoveRequestOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/RemoveResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/RemoveResponseOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileRequestOrBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/UploadFileResponseOrBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Practice/practice-DHTs/src/main/java/org/example/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Practice/practice-reactive/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Practice/practice-reactiveGRPC/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Practice/practice-reactive/src/main/java/org/example/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Practice/practice-reactiveGRPC/src/main/java/org/example/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Practice/practice-reactive/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Practice/practice-reactiveGRPC/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Practice/practice-reactive/src/main/java/org/example/MainLoop.java" beforeDir="false" afterPath="$PROJECT_DIR$/Practice/practice-reactiveGRPC/src/main/java/org/example/MainLoop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Practice/practice-reactive/src/main/java/org/example/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Practice/practice-reactiveGRPC/src/main/java/org/example/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/GrpcClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/node_start.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/proto/Node.proto" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/proto/Node.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,20 +90,31 @@
     "git-widget-placeholder": "main",
     "jdk.selected.JAVA_MODULE": "openjdk-21",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/josef/Desktop/uni/SD-PSD/trabalho/trabalho-SD/servidor-dados",
+    "last_opened_file_path": "/Users/josef/Desktop/uni/SD-PSD/trabalho/trabalho-SD/servidor-dados/final/src/main/java/psd/trabalho/files_client",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.Node3">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client" />
+      <recent name="$PROJECT_DIR$/final/src/main/java/files_client" />
+      <recent name="$PROJECT_DIR$/final/src/main/java/files_server" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client" />
+      <recent name="$PROJECT_DIR$/final/src/main/java/psd/trabalho" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.simpleCliente">
     <configuration name="Node1" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="openjdk-21" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -129,7 +146,7 @@
     <configuration name="simpleCliente" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="openjdk-21" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="psd.trabalho.GrpcClient" />
+      <option name="MAIN_CLASS_NAME" value="psd.trabalho.FakeClient" />
       <module name="final" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -158,8 +175,19 @@
       <option name="presentableId" value="Default" />
       <updated>1713025887913</updated>
       <workItem from="1715776404285" duration="25710000" />
-      <workItem from="1715818822094" duration="5770000" />
+      <workItem from="1715818822094" duration="13883000" />
+      <workItem from="1715884274271" duration="124000" />
+      <workItem from="1715884460112" duration="23035000" />
     </task>
+    <task id="LOCAL-00001" summary="final servidor de dados - launch and connection between servers working.">
+      <option name="closed" value="true" />
+      <created>1715824947234</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1715824947234</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,5 +206,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="final servidor de dados - launch and connection between servers working." />
+    <option name="LAST_COMMIT_MESSAGE" value="final servidor de dados - launch and connection between servers working." />
   </component>
 </project>

@@ -45,12 +45,82 @@ public final class Rx3DataServerNodeGrpc {
                 }, getCallOptions());
         }
 
+        public io.reactivex.rxjava3.core.Flowable<node.proto.DownloadFileResponse> downloadFile(io.reactivex.rxjava3.core.Single<node.proto.DownloadFileRequest> rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToMany(rxRequest,
+                new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.DownloadFileRequest, io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse>>() {
+                    @java.lang.Override
+                    public void accept(node.proto.DownloadFileRequest request, io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse> observer) {
+                        delegateStub.downloadFile(request, observer);
+                    }
+                }, getCallOptions());
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.UploadFileResponse> uploadFile(io.reactivex.rxjava3.core.Flowable<node.proto.UploadFileRequest> rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.manyToOne(rxRequest,
+                new com.salesforce.reactivegrpc.common.Function<io.grpc.stub.StreamObserver<node.proto.UploadFileResponse>, io.grpc.stub.StreamObserver<node.proto.UploadFileRequest>>() {
+                    @java.lang.Override
+                    public io.grpc.stub.StreamObserver<node.proto.UploadFileRequest> apply(io.grpc.stub.StreamObserver<node.proto.UploadFileResponse> observer) {
+                        return delegateStub.uploadFile(observer);
+                    }
+                }, getCallOptions());
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.RemoveResponse> removeFile(io.reactivex.rxjava3.core.Single<node.proto.RemoveRequest> rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(rxRequest,
+                new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.RemoveRequest, io.grpc.stub.StreamObserver<node.proto.RemoveResponse>>() {
+                    @java.lang.Override
+                    public void accept(node.proto.RemoveRequest request, io.grpc.stub.StreamObserver<node.proto.RemoveResponse> observer) {
+                        delegateStub.removeFile(request, observer);
+                    }
+                }, getCallOptions());
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(io.reactivex.rxjava3.core.Single<node.proto.PingRequest> rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(rxRequest,
+                new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.PingRequest, io.grpc.stub.StreamObserver<node.proto.PingResponse>>() {
+                    @java.lang.Override
+                    public void accept(node.proto.PingRequest request, io.grpc.stub.StreamObserver<node.proto.PingResponse> observer) {
+                        delegateStub.pingPong(request, observer);
+                    }
+                }, getCallOptions());
+        }
+
         public io.reactivex.rxjava3.core.Single<node.proto.NewNodeResponse> newNode(node.proto.NewNodeRequest rxRequest) {
             return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(io.reactivex.rxjava3.core.Single.just(rxRequest),
                 new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.NewNodeRequest, io.grpc.stub.StreamObserver<node.proto.NewNodeResponse>>() {
                     @java.lang.Override
                     public void accept(node.proto.NewNodeRequest request, io.grpc.stub.StreamObserver<node.proto.NewNodeResponse> observer) {
                         delegateStub.newNode(request, observer);
+                    }
+                }, getCallOptions());
+        }
+
+        public io.reactivex.rxjava3.core.Flowable<node.proto.DownloadFileResponse> downloadFile(node.proto.DownloadFileRequest rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToMany(io.reactivex.rxjava3.core.Single.just(rxRequest),
+                new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.DownloadFileRequest, io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse>>() {
+                    @java.lang.Override
+                    public void accept(node.proto.DownloadFileRequest request, io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse> observer) {
+                        delegateStub.downloadFile(request, observer);
+                    }
+                }, getCallOptions());
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.RemoveResponse> removeFile(node.proto.RemoveRequest rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(io.reactivex.rxjava3.core.Single.just(rxRequest),
+                new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.RemoveRequest, io.grpc.stub.StreamObserver<node.proto.RemoveResponse>>() {
+                    @java.lang.Override
+                    public void accept(node.proto.RemoveRequest request, io.grpc.stub.StreamObserver<node.proto.RemoveResponse> observer) {
+                        delegateStub.removeFile(request, observer);
+                    }
+                }, getCallOptions());
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(node.proto.PingRequest rxRequest) {
+            return com.salesforce.rx3grpc.stub.ClientCalls.oneToOne(io.reactivex.rxjava3.core.Single.just(rxRequest),
+                new com.salesforce.reactivegrpc.common.BiConsumer<node.proto.PingRequest, io.grpc.stub.StreamObserver<node.proto.PingResponse>>() {
+                    @java.lang.Override
+                    public void accept(node.proto.PingRequest request, io.grpc.stub.StreamObserver<node.proto.PingResponse> observer) {
+                        delegateStub.pingPong(request, observer);
                     }
                 }, getCallOptions());
         }
@@ -67,6 +137,35 @@ public final class Rx3DataServerNodeGrpc {
             throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
         }
 
+        public io.reactivex.rxjava3.core.Flowable<node.proto.DownloadFileResponse> downloadFile(node.proto.DownloadFileRequest request) {
+            return downloadFile(io.reactivex.rxjava3.core.Single.just(request));
+        }
+
+        public io.reactivex.rxjava3.core.Flowable<node.proto.DownloadFileResponse> downloadFile(io.reactivex.rxjava3.core.Single<node.proto.DownloadFileRequest> request) {
+            throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
+        }
+
+
+        public io.reactivex.rxjava3.core.Single<node.proto.UploadFileResponse> uploadFile(io.reactivex.rxjava3.core.Flowable<node.proto.UploadFileRequest> request) {
+            throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.RemoveResponse> removeFile(node.proto.RemoveRequest request) {
+            return removeFile(io.reactivex.rxjava3.core.Single.just(request));
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.RemoveResponse> removeFile(io.reactivex.rxjava3.core.Single<node.proto.RemoveRequest> request) {
+            throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(node.proto.PingRequest request) {
+            return pingPong(io.reactivex.rxjava3.core.Single.just(request));
+        }
+
+        public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> pingPong(io.reactivex.rxjava3.core.Single<node.proto.PingRequest> request) {
+            throw new io.grpc.StatusRuntimeException(io.grpc.Status.UNIMPLEMENTED);
+        }
+
         @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
             return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
                     .addMethod(
@@ -76,6 +175,34 @@ public final class Rx3DataServerNodeGrpc {
                                             node.proto.NewNodeRequest,
                                             node.proto.NewNodeResponse>(
                                             this, METHODID_NEW_NODE)))
+                    .addMethod(
+                            node.proto.DataServerNodeGrpc.getDownloadFileMethod(),
+                            asyncServerStreamingCall(
+                                    new MethodHandlers<
+                                            node.proto.DownloadFileRequest,
+                                            node.proto.DownloadFileResponse>(
+                                            this, METHODID_DOWNLOAD_FILE)))
+                    .addMethod(
+                            node.proto.DataServerNodeGrpc.getUploadFileMethod(),
+                            asyncClientStreamingCall(
+                                    new MethodHandlers<
+                                            node.proto.UploadFileRequest,
+                                            node.proto.UploadFileResponse>(
+                                            this, METHODID_UPLOAD_FILE)))
+                    .addMethod(
+                            node.proto.DataServerNodeGrpc.getRemoveFileMethod(),
+                            asyncUnaryCall(
+                                    new MethodHandlers<
+                                            node.proto.RemoveRequest,
+                                            node.proto.RemoveResponse>(
+                                            this, METHODID_REMOVE_FILE)))
+                    .addMethod(
+                            node.proto.DataServerNodeGrpc.getPingPongMethod(),
+                            asyncUnaryCall(
+                                    new MethodHandlers<
+                                            node.proto.PingRequest,
+                                            node.proto.PingResponse>(
+                                            this, METHODID_PING_PONG)))
                     .build();
         }
 
@@ -90,6 +217,10 @@ public final class Rx3DataServerNodeGrpc {
     }
 
     public static final int METHODID_NEW_NODE = 0;
+    public static final int METHODID_DOWNLOAD_FILE = 1;
+    public static final int METHODID_UPLOAD_FILE = 2;
+    public static final int METHODID_REMOVE_FILE = 3;
+    public static final int METHODID_PING_PONG = 4;
 
     private static final class MethodHandlers<Req, Resp> implements
             io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -118,6 +249,36 @@ public final class Rx3DataServerNodeGrpc {
                                 }
                             }, serviceImpl::onErrorMap);
                     break;
+                case METHODID_DOWNLOAD_FILE:
+                    com.salesforce.rx3grpc.stub.ServerCalls.oneToMany((node.proto.DownloadFileRequest) request,
+                            (io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse>) responseObserver,
+                            new com.salesforce.reactivegrpc.common.Function<node.proto.DownloadFileRequest, io.reactivex.rxjava3.core.Flowable<node.proto.DownloadFileResponse>>() {
+                                @java.lang.Override
+                                public io.reactivex.rxjava3.core.Flowable<node.proto.DownloadFileResponse> apply(node.proto.DownloadFileRequest single) {
+                                    return serviceImpl.downloadFile(single);
+                                }
+                            }, serviceImpl::onErrorMap);
+                    break;
+                case METHODID_REMOVE_FILE:
+                    com.salesforce.rx3grpc.stub.ServerCalls.oneToOne((node.proto.RemoveRequest) request,
+                            (io.grpc.stub.StreamObserver<node.proto.RemoveResponse>) responseObserver,
+                            new com.salesforce.reactivegrpc.common.Function<node.proto.RemoveRequest, io.reactivex.rxjava3.core.Single<node.proto.RemoveResponse>>() {
+                                @java.lang.Override
+                                public io.reactivex.rxjava3.core.Single<node.proto.RemoveResponse> apply(node.proto.RemoveRequest single) {
+                                    return serviceImpl.removeFile(single);
+                                }
+                            }, serviceImpl::onErrorMap);
+                    break;
+                case METHODID_PING_PONG:
+                    com.salesforce.rx3grpc.stub.ServerCalls.oneToOne((node.proto.PingRequest) request,
+                            (io.grpc.stub.StreamObserver<node.proto.PingResponse>) responseObserver,
+                            new com.salesforce.reactivegrpc.common.Function<node.proto.PingRequest, io.reactivex.rxjava3.core.Single<node.proto.PingResponse>>() {
+                                @java.lang.Override
+                                public io.reactivex.rxjava3.core.Single<node.proto.PingResponse> apply(node.proto.PingRequest single) {
+                                    return serviceImpl.pingPong(single);
+                                }
+                            }, serviceImpl::onErrorMap);
+                    break;
                 default:
                     throw new java.lang.AssertionError();
             }
@@ -127,6 +288,10 @@ public final class Rx3DataServerNodeGrpc {
         @java.lang.SuppressWarnings("unchecked")
         public io.grpc.stub.StreamObserver<Req> invoke(io.grpc.stub.StreamObserver<Resp> responseObserver) {
             switch (methodId) {
+                case METHODID_UPLOAD_FILE:
+                    return (io.grpc.stub.StreamObserver<Req>) com.salesforce.rx3grpc.stub.ServerCalls.manyToOne(
+                            (io.grpc.stub.StreamObserver<node.proto.UploadFileResponse>) responseObserver,
+                            serviceImpl::uploadFile, serviceImpl::onErrorMap, serviceImpl.getCallOptions(methodId));
                 default:
                     throw new java.lang.AssertionError();
             }
