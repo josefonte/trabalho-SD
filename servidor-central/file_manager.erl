@@ -37,8 +37,18 @@ add_files(OldFiles, Files, User) ->
                         {ok, _} ->
                             Acc;
                         error ->
-                            NewRatings = maps:put(User, UserRating, Ratings),
-                            maps:put(Name, NewRatings, Acc)
+                            case UserRating of
+                                "null" ->
+                                    Acc;
+                                _ ->
+                                    case string:to_integer(UserRating) of
+                                        {error, _} ->
+                                            Acc;
+                                        {UserRatingInt, _} ->
+                                            NewRatings = maps:put(User, UserRatingInt, Ratings),
+                                            maps:put(Name, NewRatings, Acc)
+                                    end
+                            end
                     end;
                 error ->
                     Acc
@@ -59,7 +69,7 @@ add_files(OldFiles, Files, User) ->
         NewFiles,
         Files
     ).
-    
+
 
 
 %processo servidor
@@ -175,7 +185,7 @@ loop(Map) ->
                     end
             end;
 
-        {{update_album, Album, Files,User}, From} ->
+        {{update_album, Album, Files, User}, From} ->
             case maps:find(Album, Map) of
                 error ->
                     From ! {album_not_found, ?MODULE},
@@ -198,7 +208,11 @@ loop(Map) ->
                     FilteredFiles = maps:map(
                         fun(_File, Ratings) ->
                             case maps:find(User, Ratings) of
-                                {ok, Rating} -> integer_to_list(Rating);
+                                {ok, Rating} ->
+                                    case is_integer(Rating) of
+                                        true -> integer_to_list(Rating);
+                                        false -> "null"
+                                    end;
                                 error -> "null"
                             end
                         end, Files),

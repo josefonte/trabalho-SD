@@ -82,6 +82,7 @@ public class Client {
         out.println("create_account," + username + "," + password);
         String response = in.readLine();
         if (response.equals("Account created")) {
+            User = username;
             System.out.println("Registration successful.");
             return 0;
         } else {
@@ -277,6 +278,10 @@ public class Client {
             ReentrantLock vvlock = new ReentrantLock();
             VersionVector versionVector = new VersionVector();
 
+            out.println("session_join," + User);
+            String sessionResponse = in.readLine();
+            System.out.println(sessionResponse);
+
             out.println("get_album_info," + album);
 
             // ["nuno","joao","tony"]
@@ -464,7 +469,7 @@ public class Client {
         do{
             System.out.println("Enter album name (or enter to leave):");
             album_name = reader.readLine();
-            out.println("check_user," + album_name );
+            out.println("check_user," + album_name);
             command = in.readLine();
             if (!command.equals("OK")){
                 System.out.println("You are not in the album. Please try again.");

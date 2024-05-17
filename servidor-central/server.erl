@@ -2,6 +2,7 @@
 -import(user_manager, []).
 -import(file_manager, []).
 -import(login_manager, []).
+-import(session_manager, []).
 -export([start/1, stop/1, server/1]).
 
 start(Port) -> register(?MODULE, spawn(fun() -> server(Port) end)).
@@ -14,6 +15,7 @@ server(Port) ->
             user_manager:start(),
             file_manager:start(),
             login_manager:start(),
+            session_manager:start(),
             acceptor(ListenSocket,Port);
 
         {error, _} ->
@@ -61,6 +63,14 @@ userExists(Username) ->
         _ -> false
     end.
 
+isLastUserOnSession(User) ->
+    session_manager ! {{is_last_user, User}, self()},
+    receive
+        {ok, _} -> true;
+        _ -> false
+    end.
+
+
 % "[nuno|alice]" -> ["nuno", "alice"]
 parse_users(UsersData) ->
     CleanData = string:replace(string:replace(UsersData, "[", "", all), "]", "", all),
@@ -96,14 +106,10 @@ parse_files_ratings(FilesData) ->
     CleanData = string:replace(string:replace(FilesData, "{", "", all), "}", "", all),
     FilesList = re:split(CleanData, "\\|", [{return, list}]),
     Files = lists:map(fun(File) ->
-        [NamePart | RatingsPart] = re:split(File, "=>", [{return, list}]),
+        [NamePart , RatingsPart] = re:split(File, "=>", [{return, list}]),
         Name = string:strip(NamePart),
-        % and the rating should be a number, so we can convert it to an integer
-        NewRating = case string:strip(RatingsPart) of
-            "null" -> "";
-            Rating -> Rating
-        end,
-        {Name, NewRating}
+        Rating = string:strip(RatingsPart),
+        {Name, Rating}
     end, FilesList),
     maps:from_list(Files).
 
@@ -359,22 +365,47 @@ userAuth(Socket,User) ->
                         false ->
                             gen_tcp:send(Socket, "You must be a user of the album to update it\n");
                         true ->
-                            user_manager ! {{update_album, Album, ParsedUsers}, self()},
-                            receive
-                                {ok, _} ->
-                                    io:format("Files: ~p~n", [Files]),
-                                    ParsedFiles = parse_files_ratings(Files),
-                                    io:format("ParsedFiles: ~p~n", [ParsedFiles]),
-                                    file_manager ! {{update_album, Album, ParsedFiles,User}, self()},
+                            case isLastUserOnSession(User) of
+                                false ->
+                                    gen_tcp:send(Socket, "You must be the last user on the album to update it\n");
+                                true ->
+                                    user_manager ! {{update_album, Album, ParsedUsers}, self()},
                                     receive
                                         {ok, _} ->
-                                            gen_tcp:send(Socket, "Album updated\n");
+                                            io:format("Files: ~p~n", [Files]),
+                                            ParsedFiles = parse_files_ratings(Files),
+                                            io:format("ParsedFiles: ~p~n", [ParsedFiles]),
+                                            file_manager ! {{update_album, Album, ParsedFiles,User}, self()},
+                                            receive
+                                                {ok, _} ->
+                                                    gen_tcp:send(Socket, "Album updated\n");
+                                                {album_not_found, _} ->
+                                                    gen_tcp:send(Socket, "Album not found\n")
+                                            end;
                                         {album_not_found, _} ->
                                             gen_tcp:send(Socket, "Album not found\n")
-                                    end;
-                                {album_not_found, _} ->
-                                    gen_tcp:send(Socket, "Album not found\n")
-                                end
+                                    end
+                            end
+                    end,
+                    userAuth(Socket,User);
+
+                ["session_join", User] ->
+                    session_manager ! {{session_join, User}, self()},
+                    receive
+                        {ok, _} ->
+                            gen_tcp:send(Socket, "Session joined\n");
+                        {user_exists, _} ->
+                            gen_tcp:send(Socket, "User already in session\n")
+                    end,
+                    userAuth(Socket,User);
+
+                ["session_leave", User] ->
+                    session_manager ! {{session_leave, User}, self()},
+                    receive
+                        {ok, _} ->
+                            gen_tcp:send(Socket, "Session left\n");
+                        {user_not_found, _} ->
+                            gen_tcp:send(Socket, "User not in session\n")
                     end,
                     userAuth(Socket,User);
 
