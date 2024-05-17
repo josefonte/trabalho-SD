@@ -294,7 +294,7 @@ public class Client {
                 if (user.isEmpty()) {
                     continue;
                 }
-                utilizadores.simpleAdd(user);
+                utilizadores.simpleAdd(user.substring(1, user.length() - 1));
             }
 
             // #{"file" => "7","file2" => "null"}
@@ -313,10 +313,14 @@ public class Client {
                 String file_name = parts[0].trim();
                 String file_rating = parts[1].trim();
 
-                System.out.println("Adding file: " + file_name + " with rating: " + file_rating);
 
-                ficheiros.simpleAdd(file_name);
-                rates.put(file_name,file_rating);
+                ficheiros.simpleAdd(file_name.substring(1, file_name.length() - 1));
+                if (!file_rating.equals("null")){
+
+                    System.out.println("Adding file: " + file_name + " with rating: " + file_rating);
+
+                    rates.put(file_name,file_rating);
+                }
             }
 
             subscriber.connect("tcp://localhost:" + 5556);
@@ -400,8 +404,17 @@ public class Client {
                         String rating = parts[2];
                         if (rates.containsKey(file_name)){
                             System.out.println("You have already rated this file. Please try again.");
-                            continue;
                         }
+                        else if (Integer.parseInt(rating) < 0 || Integer.parseInt(rating) > 10){
+                            System.out.println("Invalid rating. Please try again.");
+                        }
+                        else if(!ficheiros.m.containsKey(file_name)) {
+                            System.out.println("File does not exist. Please try again.");
+                        }
+                        else{
+                            rates.put(file_name,rating);
+                        }
+                        command = reader.readLine();
                         rates.put(file_name,rating);
                         continue;
                     } else if (command.startsWith("\\add_user")) {

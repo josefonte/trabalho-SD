@@ -35,15 +35,15 @@ add_files(OldFiles, Files, User) ->
                     % File exists in the new list
                     case maps:find(User, Ratings) of
                         {ok, _} ->
-                            Acc;
+                            maps:put(Name, Ratings, Acc);
                         error ->
                             case UserRating of
                                 "null" ->
-                                    Acc;
+                                    maps:put(Name, Ratings, Acc);
                                 _ ->
                                     case string:to_integer(UserRating) of
                                         {error, _} ->
-                                            Acc;
+                                            maps:put(Name, Ratings, Acc);
                                         {UserRatingInt, _} ->
                                             NewRatings = maps:put(User, UserRatingInt, Ratings),
                                             maps:put(Name, NewRatings, Acc)
@@ -61,7 +61,16 @@ add_files(OldFiles, Files, User) ->
         fun(Name, Rating, Acc) ->
             case maps:find(Name, OldFiles) of
                 error ->
-                    maps:put(Name,#{User=>Rating}, Acc);
+                    case Rating of
+                        "null" ->
+                            maps:put(Name,#{}, Acc);
+                        _ ->
+                            case string:to_integer(Rating) of
+                                {error, _} ->
+                                    maps:put(Name,#{}, Acc);
+                                {RatingInt, _} -> maps:put(Name,#{User=>RatingInt}, Acc)
+                            end
+                    end;
                 _ ->
                     Acc
             end
