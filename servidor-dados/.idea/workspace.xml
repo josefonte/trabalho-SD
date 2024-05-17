@@ -4,10 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="remove file done too">
+    <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="stuff">
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/esgaio.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/picanhas.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/zaidu.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8002/eliseu.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/eliseu.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/picanhas.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/picanhas.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/marega.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/marega.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/paulinho.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8000/paulinho.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/video.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8000/video.mp4" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +172,7 @@
       <workItem from="1715776404285" duration="25710000" />
       <workItem from="1715818822094" duration="13883000" />
       <workItem from="1715884274271" duration="124000" />
-      <workItem from="1715884460112" duration="33963000" />
+      <workItem from="1715884460112" duration="36650000" />
     </task>
     <task id="LOCAL-00001" summary="final servidor de dados - launch and connection between servers working.">
       <option name="closed" value="true" />
@@ -198,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715924192347</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="stuff">
+      <option name="closed" value="true" />
+      <created>1715924612519</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1715924612519</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +237,7 @@
     <MESSAGE value="upload and download almost done" />
     <MESSAGE value="upload and download done very nice very cool" />
     <MESSAGE value="remove file done too" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove file done too" />
+    <MESSAGE value="stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="stuff" />
   </component>
 </project>

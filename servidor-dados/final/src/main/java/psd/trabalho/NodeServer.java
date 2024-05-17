@@ -75,8 +75,12 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
         }
         nodeState.printState();
 
+        File theDir = new File("./final/src/main/java/psd/trabalho/files_server_"+ nodeState.getIpPort());
+        if (!theDir.exists()){
+            theDir.mkdirs();
+        }
+
         System.out.println("Opening connections to neighbor nodes " + neighborNodes);
-        //opening connections to neighbor nodes
         for (Pair<String,String> neighbor : neighborNodes) {
             if (!neighbor.getPair2().equals(nodeState.getIpPort())) {
                 try {
@@ -117,7 +121,6 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
             }
         }
 
-        //open server socket
         System.out.println("Opening server socket");
         Server server = ServerBuilder.forPort(Integer.parseInt(nodeState.getIpPort()))
                 .addService(this)
@@ -126,7 +129,6 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
 
         System.out.println("Server started, listening on " +  nodeState.getKeyString() );
 
-        nodeState.addStorage(hash.generateHash("paulinho.jpeg"), "./final/src/main/java/psd/trabalho/files_server/paulinho.jpeg");
         server.awaitTermination();
     }
 
@@ -286,7 +288,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
 
                         try {
                             byte[] file_key = hash.generateHash(chunk.getFileName());
-                            File newFile = new File("./final/src/main/java/psd/trabalho/files_server/"+chunk.getFileName());
+                            File newFile = new File("./final/src/main/java/psd/trabalho/files_server_"+ nodeState.getIpPort() +"/"+chunk.getFileName());
                             file.set(newFile);
                             fileOutputStream.set(new FileOutputStream(String.valueOf(file)));
                             nodeState.addStorage(file_key, newFile.getAbsolutePath());

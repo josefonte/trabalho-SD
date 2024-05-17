@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import node.proto.Rx3DataServerNodeGrpc;
+import node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub;
 
 import node.proto.UploadFileRequest;
 import node.proto.UploadFileResponse;
@@ -29,28 +30,41 @@ import node.proto.DownloadFileRequest;
 import node.proto.DownloadFileResponse;
 import node.proto.PingRequest;
 import node.proto.PingResponse;
+import node.proto.RemoveRequest;
+import node.proto.RemoveResponse;
 public class FakeClient {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8000)
-                .usePlaintext()
-                .build();
 
-        node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub stub = node.proto.Rx3DataServerNodeGrpc.newRxStub(channel);
+        fileUpload("localhost",8000,"eliseu.jpg");
+        fileUpload("localhost",8000,"marega.jpg");
+        fileUpload("localhost",8000,"paulinho.jpeg");
+        fileUpload("localhost",8000,"picanhas.jpg");
+        fileUpload("localhost",8000,"video.mp4");
+        fileUpload("localhost",8000,"zaidu.jpeg");
 
-        fileUpload(stub,"eliseu.jpg");
-        fileUpload(stub,"marega.jpg");
-        fileUpload(stub,"paulinho.jpeg");
-        fileUpload(stub,"picanhas.jpg");
-        fileUpload(stub,"video.mp4");
-        downloadFile(stub,"paulinho.jpeg");
-        removeFile(stub,"eliseu.jpg");
+        downloadFile("localhost",8000,"paulinho.jpeg");
+        downloadFile("localhost",8000,"marega.jpg");
 
-        channel.shutdown();
+        removeFile("localhost",8000,"picanhas.jpg");
+
+
     }
 
 
-    private static void downloadFile(node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub stub, String fileName) {
+    private static ManagedChannel  createChannel(String ip, String port){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(ip, Integer.parseInt(port))
+                .usePlaintext()
+                .build();
+
+       return channel;
+    }
+
+    private static void downloadFile(String ip_add,int port, String fileName) {
+        ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
+
+        RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
+
         Single<DownloadFileRequest> req = Single.just(DownloadFileRequest.newBuilder().setFileName(fileName).build());
 
         AtomicLong totalFileSize = new AtomicLong(0);
@@ -71,7 +85,7 @@ public class FakeClient {
                             System.out.println("#### File Download started -> " + chunk.getFileName());
 
                             try {
-                                File newFile = new File("./final/src/main/java/psd/trabalho/files_client/" + chunk.getFileName());
+                                File newFile = new File("./final/src/main/java/psd/trabalho/client_downloads/" + chunk.getFileName());
                                 file.set(newFile);
                                 fileOutputStream.set(new FileOutputStream(String.valueOf(file)));
 
@@ -111,9 +125,12 @@ public class FakeClient {
         }
         else {
             System.out.println("Error downloading file: " + response.getFileName());
-            System.out.println("Error: " + response.getErrorMessage() + " from " + response.getNodeIp() + ":" + response.getNodePort());
+            System.out.println("Error: " + response.getErrorMessage() + " | search in " + response.getNodeIp() + ":" + response.getNodePort());
+            channel.shutdown();
+            downloadFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
         }
 
+        channel.shutdown();
 
     }
     private static void writeBufferToFile(List<node.proto.DownloadFileResponseTransfer> chunkBuffer, FileOutputStream fileOutputStream) {
@@ -126,13 +143,15 @@ public class FakeClient {
         }
     }
 
-    private static void fileUpload(node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub stub, String fileName) throws IOException {
-        UploadFileRequest req = UploadFileRequest.newBuilder().setFileName(fileName).build();
+    private static void fileUpload(String ip_add,int port, String fileName) throws IOException {
+        ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
+        RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
 
+        UploadFileRequest req = UploadFileRequest.newBuilder().setFileName(fileName).build();
         UploadFileResponse auth = stub.uploadFile(req).blockingGet();
 
         if(auth.getSuccess()){
-            File file = new File("./final/src/main/java/psd/trabalho/files_client/" + fileName);
+            File file = new File("./final/src/main/java/psd/trabalho/files/" + fileName);
 
             try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 Flowable<UploadFileRequestTransfer> requestFlowable = Flowable.generate(emitter -> {
@@ -160,32 +179,41 @@ public class FakeClient {
                         });}}
         else {
             System.out.println("Error uploading file: " + auth.getFileName());
-            System.out.println("Error: " + auth.getErrorMessage() + " | " + auth.getNodeIp() + ":" + auth.getNodePort());
+            System.out.println("Error: " + auth.getErrorMessage() + " | upload to " + auth.getNodeIp() + ":" + auth.getNodePort());
+            channel.shutdown();
+            fileUpload(auth.getNodeIp(), Integer.parseInt(auth.getNodePort()), fileName);
         }
 
-
+        channel.shutdown();
     }
 
-    private static void removeFile(node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub stub, String fileName) {
-        Single<node.proto.RemoveRequest> req = Single.just(node.proto.RemoveRequest.newBuilder().setFileName(fileName).build());
+    private static void removeFile(String ip_add,int port, String fileName) {
+
+        ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
+        RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
 
         System.out.println("Sending remove request");
-
-        node.proto.RemoveResponse response = stub.removeFile(req).blockingGet();
+        Single<RemoveRequest> req = Single.just(RemoveRequest.newBuilder().setFileName(fileName).build());
+        RemoveResponse response = stub.removeFile(req).blockingGet();
 
         if (response.getSuccess()) {
             System.out.println("File removed successfully");
         }
         else {
             System.out.println("Error removing file");
-          }
+            channel.shutdown();
+            removeFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+        }
+        channel.shutdown();
     }
 
-    private static void ping(node.proto.Rx3DataServerNodeGrpc.RxDataServerNodeStub  stub){
+    private static void ping(String ip_add,int port){
+        ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
+        RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
+
         Single<PingRequest> req = Single.just(PingRequest.newBuilder().setNodeIp("localhost").setNodePort("0000").setMessage("PING").build());
 
         System.out.println("Sending ping");
-
         stub.pingPong(req).blockingSubscribe(r->{
             System.out.println("Response: " + r.getMessage() + " from " + r.getNodeIp() + ":" + r.getNodePort());
         });
