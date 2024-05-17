@@ -24,7 +24,6 @@ remove_user(Album,Username) -> rpc({remove_user,Album,Username}).
 
 
 
-
 %processo servidor
 loop(Map) ->
     receive
@@ -94,16 +93,12 @@ loop(Map) ->
                 error ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map);
-                {ok, ExistingUsers} ->
-                    case sets:is_subset(Users, ExistingUsers) of
-                        true ->
-                            From ! {ok, ?MODULE},
-                            NewMap = maps:put(Album, Users, Map),
-                            loop(NewMap);
-                        false ->
-                            From ! {invalid_users, ?MODULE},
-                            loop(Map)
-                    end
+                {ok, _ } ->
+                    % fazer a verificacao com os utilizadores no login manager
+                    % sets:is_subset(Users, ExistingUsers) of>
+                    From ! {ok, ?MODULE},
+                    NewMap = maps:put(Album, Users, Map),
+                    loop(NewMap)
             end;
 
         {{get_album_users, Album}, From} ->

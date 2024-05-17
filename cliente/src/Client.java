@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringJoiner;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Client {
@@ -276,17 +277,42 @@ public class Client {
             ReentrantLock vvlock = new ReentrantLock();
             VersionVector versionVector = new VersionVector();
 
-            //TODO estado do album ---> no inicio ir buscar lista de ficheiros e de utilizadores e o rate que este user deu
-            // (NUNO)
-            // out.println("get_album_info,"+album);
-            // String response = in.readLine();
-            ORSetCRDT utilizadores = new ORSetCRDT();
-            ORSetCRDT ficheiros = new ORSetCRDT();
+            out.println("get_album_info," + album);
+
+            // ["nuno","joao","tony"]
+            String usersResponse = in.readLine();
+            String[] users = usersResponse.substring(1, usersResponse.length() - 1).split(",");
+
+            ORSetCRDT utilizadores = new ORSetCRDT("utilizadores");
+
+            for (String user : users) {
+                if (user.isEmpty()) {
+                    continue;
+                }
+                utilizadores.simpleAdd(user);
+            }
+
+            // #{"file" => "7","file2" => "null"}
+            String filesResponse = in.readLine();
+            String[] files = filesResponse.substring(2, filesResponse.length() - 1).split(",");
+
+            ORSetCRDT ficheiros = new ORSetCRDT("ficheiros");
             HashMap<String,String> rates = new HashMap<>();
 
 
+            for (String file : files) {
+                if (file.isEmpty()) {
+                    continue;
+                }
+                String[] parts = file.split(" => ");
+                String file_name = parts[0].trim();
+                String file_rating = parts[1].trim();
 
+                System.out.println("Adding file: " + file_name + " with rating: " + file_rating);
 
+                ficheiros.simpleAdd(file_name);
+                rates.put(file_name,file_rating);
+            }
 
             subscriber.connect("tcp://localhost:" + 5556);
             subscriber.subscribe(album.getBytes());
@@ -330,7 +356,7 @@ public class Client {
             }).start();
 
             String command = reader.readLine();
-            String message;
+            // String message;
             String crdt_name;
             String crdt;
            // ORSetCRDT delta;
@@ -349,7 +375,8 @@ public class Client {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
                         //TODO - upload file
-                        message = "add_file," + album + "," + file_name;
+
+                        // message = "add_file," + album + "," + file_name;
                         crdt_name = "files";
                         ficheiros.add(file_name,pid_string);
                         crdt = ficheiros.serialize();
@@ -357,7 +384,8 @@ public class Client {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
                         //TODO - remove file
-                        message = "remove_file," + album + "," + file_name;
+
+                        // message = "remove_file," + album + "," + file_name;
                         crdt_name = "files";
                         ficheiros.remove(file_name,pid_string);
                         crdt = ficheiros.serialize();
@@ -374,14 +402,14 @@ public class Client {
                     } else if (command.startsWith("\\add_user")) {
                         String[] parts = command.split(" ");
                         String username = parts[1];
-                        message = "add_user," + album + "," + username;
+                        // message = "add_user," + album + "," + username;
                         crdt_name = "users";
                         utilizadores.add(username,pid_string);
                         crdt = utilizadores.serialize();
                     } else if (command.startsWith("\\remove_user")) {
                         String[] parts = command.split(" ");
                         String username = parts[1];
-                        message = "remove_user," + album + "," + username;
+                        // message = "remove_user," + album + "," + username;
                         crdt_name = "users";
                         utilizadores.remove(username,pid_string);
                         crdt = utilizadores.serialize();
@@ -393,17 +421,29 @@ public class Client {
                     }
                     String new_message = String.format("%s:command:%s:%s:%s", album, pid, crdt_name,crdt);
                     publisher.send(new_message.getBytes());
-                    //FIXME está a enviar pedido a pedido - enviar só no fim  (NUNO)
-                    out.println(message);
-                    String response = in.readLine();
-                    System.out.println(response); // DEBUG
+//                    out.println(message);
+//                    String response = in.readLine();
+//                    System.out.println(response); // DEBUG
 
             }
                 command = reader.readLine();
             }
-            //TODO - enviar tudo de uma vez (NUNO)
-        }
-        catch (Exception e) {
+
+            String usersToSend = utilizadores.serializeNames();
+            System.out.println("Users: " + usersToSend);
+
+            // {file2=>10|file3=>null}
+            StringJoiner filesToSend = new StringJoiner("|");
+            for (String file : ficheiros.m.keySet()) {
+                filesToSend.add(file + "=>" + rates.getOrDefault(file, "null"));
+            }
+            System.out.println("Files: " + filesToSend);
+
+            out.println("update_album," + album + "," + usersToSend + ",{" + filesToSend + "}");
+            String response = in.readLine();
+            System.out.println(response); // DEBUG
+
+        } catch (Exception e) {
             e.printStackTrace();
 
         }

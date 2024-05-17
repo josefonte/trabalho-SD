@@ -1,11 +1,9 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ORSetCRDT {
     VersionVector cc;
+    String name;
     HashMap<String, HashSet<Dot>> m;
 
     ReentrantLock lock = new ReentrantLock();
@@ -15,6 +13,12 @@ public class ORSetCRDT {
         this.m = new HashMap<>();
     }
 
+    public ORSetCRDT(String name){
+        this.cc = new VersionVector();
+        this.m = new HashMap<>();
+        this.name = name;
+    }
+
     public ORSetCRDT(VersionVector cc, HashMap<String, HashSet<Dot>> m){
         this.cc = cc;
         this.m = m;
@@ -22,10 +26,13 @@ public class ORSetCRDT {
 
     public HashSet<String> elements(){
         HashSet<String> elements = new HashSet<>();
+        lock.lock();
         for (String elem : m.keySet()){
             elements.add(elem);
         }
+        lock.unlock();
         return elements;
+
     }
 
 
@@ -41,18 +48,17 @@ public class ORSetCRDT {
         lock.unlock();
     }
 
-
+    public void simpleAdd(String name) {
+        lock.lock();
+        m.put(name, new HashSet<>());
+        lock.unlock();
+    }
 
     public void remove(String name, String pid) {
         lock.lock();
         m.remove(name);
         lock.unlock();
     }
-
-
-
-
-
 
     public void join(ORSetCRDT other){
         VersionVector cc_m = other.cc;
@@ -100,6 +106,10 @@ public class ORSetCRDT {
         }
         // m = c ∪ c′
         cc.update(cc_m);
+        // communicate to the client if there were changes
+        if (!new_m.equals(m)){
+            System.out.println("Novo conjunto de " + this.name+" : " + new_m.keySet());
+        }
         m = new_m;
         System.out.println("New m: " + m);
         lock.unlock();
@@ -120,6 +130,21 @@ public class ORSetCRDT {
         sb.append(cc.serializeCausalContext());
         return sb.toString();
     }
+
+    // ["name1"|"name2"|"name3"]
+    public String serializeNames() {
+        StringJoiner joiner = new StringJoiner("|");
+        for (String name : m.keySet()) {
+            joiner.add(name);
+        }
+        return "[" + joiner + "]";
+    }
+
+    // {file2=>{nuno=>10}|file3=>{nuno=>4}}
+//    public String serializeFiles(){
+//        StringJoiner joiner = new StringJoiner("|");
+//
+//    }
 
     public static ORSetCRDT deserialize(String orSetString){
         ORSetCRDT orSet = new ORSetCRDT();
