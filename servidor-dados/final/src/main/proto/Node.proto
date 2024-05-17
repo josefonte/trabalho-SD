@@ -8,8 +8,12 @@ option java_outer_classname = "NodeProto";
 
 service DataServerNode {
   rpc NewNode (NewNodeRequest) returns (NewNodeResponse) {}
-  rpc DownloadFile (DownloadFileRequest) returns (stream DownloadFileResponse) {}
-  rpc UploadFile (stream UploadFileRequest) returns (UploadFileResponse) {}
+  rpc DownloadFile (DownloadFileRequest) returns (DownloadFileResponse) {}
+  rpc DownloadFileTransfer (DownloadFileRequest) returns (stream DownloadFileResponseTransfer) {}
+
+  rpc UploadFile ( UploadFileRequest) returns (UploadFileResponse) {}
+  rpc UploadFileTransfer (stream UploadFileRequestTransfer) returns (UploadFileResponseTransfer) {}
+
   rpc RemoveFile (RemoveRequest) returns (RemoveResponse) {}
   rpc PingPong (PingRequest) returns (PingResponse) {}
 }
@@ -35,12 +39,17 @@ message DownloadFileRequest {
   string file_name = 1;
 }
 message DownloadFileResponse {
-  bytes file_data = 1;
-  bool success = 2;
+  bool success = 1;
+  string file_name = 2;
+  string node_ip = 3;
+  string node_port = 4;
+  string error_message = 5;
+}
+message DownloadFileResponseTransfer {
+  bool success = 1;
+  string file_name = 2;
   string error_message = 3;
-  string node_ip = 4;
-  string node_port = 5;
-  string file_name = 6;
+  bytes file_data = 4;
 }
 
 
@@ -50,13 +59,22 @@ message DownloadFileResponse {
 
 message UploadFileRequest {
   string file_name = 1;
-  bytes file_data = 2;
 }
 message UploadFileResponse {
-  string file_name = 1;
-  bool success = 2;
+  bool success = 1;
+  string file_name = 2;
   string node_ip = 3;
   string node_port = 4;
+  string error_message = 5;
+}
+message UploadFileRequestTransfer {
+  string file_name = 2;
+  bytes file_data = 3;
+}
+message UploadFileResponseTransfer {
+  bool success = 1;
+  string file_name = 2;
+  string error_message = 3;
 }
 
 /**

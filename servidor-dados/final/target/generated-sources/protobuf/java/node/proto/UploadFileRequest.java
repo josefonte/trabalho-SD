@@ -18,7 +18,6 @@ private static final long serialVersionUID = 0L;
   }
   private UploadFileRequest() {
     fileName_ = "";
-    fileData_ = com.google.protobuf.ByteString.EMPTY;
   }
 
   @java.lang.Override
@@ -80,17 +79,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int FILE_DATA_FIELD_NUMBER = 2;
-  private com.google.protobuf.ByteString fileData_ = com.google.protobuf.ByteString.EMPTY;
-  /**
-   * <code>bytes file_data = 2;</code>
-   * @return The fileData.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString getFileData() {
-    return fileData_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -108,9 +96,6 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fileName_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, fileName_);
     }
-    if (!fileData_.isEmpty()) {
-      output.writeBytes(2, fileData_);
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -122,10 +107,6 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fileName_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, fileName_);
-    }
-    if (!fileData_.isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, fileData_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -144,8 +125,6 @@ private static final long serialVersionUID = 0L;
 
     if (!getFileName()
         .equals(other.getFileName())) return false;
-    if (!getFileData()
-        .equals(other.getFileData())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -159,8 +138,6 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + FILE_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getFileName().hashCode();
-    hash = (37 * hash) + FILE_DATA_FIELD_NUMBER;
-    hash = (53 * hash) + getFileData().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -293,7 +270,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       fileName_ = "";
-      fileData_ = com.google.protobuf.ByteString.EMPTY;
       return this;
     }
 
@@ -329,9 +305,6 @@ private static final long serialVersionUID = 0L;
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.fileName_ = fileName_;
-      }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.fileData_ = fileData_;
       }
     }
 
@@ -384,9 +357,6 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.getFileData() != com.google.protobuf.ByteString.EMPTY) {
-        setFileData(other.getFileData());
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -418,11 +388,6 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              fileData_ = input.readBytes();
-              bitField0_ |= 0x00000002;
-              break;
-            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -508,38 +473,6 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       fileName_ = value;
       bitField0_ |= 0x00000001;
-      onChanged();
-      return this;
-    }
-
-    private com.google.protobuf.ByteString fileData_ = com.google.protobuf.ByteString.EMPTY;
-    /**
-     * <code>bytes file_data = 2;</code>
-     * @return The fileData.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getFileData() {
-      return fileData_;
-    }
-    /**
-     * <code>bytes file_data = 2;</code>
-     * @param value The fileData to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFileData(com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      fileData_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bytes file_data = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearFileData() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      fileData_ = getDefaultInstance().getFileData();
       onChanged();
       return this;
     }

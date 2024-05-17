@@ -19,10 +19,4 @@ public interface UploadFileRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getFileNameBytes();
-
-  /**
-   * <code>bytes file_data = 2;</code>
-   * @return The fileData.
-   */
-  com.google.protobuf.ByteString getFileData();
 }

@@ -53,7 +53,7 @@ public final class DataServerNodeGrpc {
       fullMethodName = SERVICE_NAME + '/' + "DownloadFile",
       requestType = node.proto.DownloadFileRequest.class,
       responseType = node.proto.DownloadFileResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<node.proto.DownloadFileRequest,
       node.proto.DownloadFileResponse> getDownloadFileMethod() {
     io.grpc.MethodDescriptor<node.proto.DownloadFileRequest, node.proto.DownloadFileResponse> getDownloadFileMethod;
@@ -62,7 +62,7 @@ public final class DataServerNodeGrpc {
         if ((getDownloadFileMethod = DataServerNodeGrpc.getDownloadFileMethod) == null) {
           DataServerNodeGrpc.getDownloadFileMethod = getDownloadFileMethod =
               io.grpc.MethodDescriptor.<node.proto.DownloadFileRequest, node.proto.DownloadFileResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DownloadFile"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -77,6 +77,37 @@ public final class DataServerNodeGrpc {
     return getDownloadFileMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<node.proto.DownloadFileRequest,
+      node.proto.DownloadFileResponseTransfer> getDownloadFileTransferMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DownloadFileTransfer",
+      requestType = node.proto.DownloadFileRequest.class,
+      responseType = node.proto.DownloadFileResponseTransfer.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<node.proto.DownloadFileRequest,
+      node.proto.DownloadFileResponseTransfer> getDownloadFileTransferMethod() {
+    io.grpc.MethodDescriptor<node.proto.DownloadFileRequest, node.proto.DownloadFileResponseTransfer> getDownloadFileTransferMethod;
+    if ((getDownloadFileTransferMethod = DataServerNodeGrpc.getDownloadFileTransferMethod) == null) {
+      synchronized (DataServerNodeGrpc.class) {
+        if ((getDownloadFileTransferMethod = DataServerNodeGrpc.getDownloadFileTransferMethod) == null) {
+          DataServerNodeGrpc.getDownloadFileTransferMethod = getDownloadFileTransferMethod =
+              io.grpc.MethodDescriptor.<node.proto.DownloadFileRequest, node.proto.DownloadFileResponseTransfer>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DownloadFileTransfer"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  node.proto.DownloadFileRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  node.proto.DownloadFileResponseTransfer.getDefaultInstance()))
+              .setSchemaDescriptor(new DataServerNodeMethodDescriptorSupplier("DownloadFileTransfer"))
+              .build();
+        }
+      }
+    }
+    return getDownloadFileTransferMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<node.proto.UploadFileRequest,
       node.proto.UploadFileResponse> getUploadFileMethod;
 
@@ -84,7 +115,7 @@ public final class DataServerNodeGrpc {
       fullMethodName = SERVICE_NAME + '/' + "UploadFile",
       requestType = node.proto.UploadFileRequest.class,
       responseType = node.proto.UploadFileResponse.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<node.proto.UploadFileRequest,
       node.proto.UploadFileResponse> getUploadFileMethod() {
     io.grpc.MethodDescriptor<node.proto.UploadFileRequest, node.proto.UploadFileResponse> getUploadFileMethod;
@@ -93,7 +124,7 @@ public final class DataServerNodeGrpc {
         if ((getUploadFileMethod = DataServerNodeGrpc.getUploadFileMethod) == null) {
           DataServerNodeGrpc.getUploadFileMethod = getUploadFileMethod =
               io.grpc.MethodDescriptor.<node.proto.UploadFileRequest, node.proto.UploadFileResponse>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "UploadFile"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -106,6 +137,37 @@ public final class DataServerNodeGrpc {
       }
     }
     return getUploadFileMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<node.proto.UploadFileRequestTransfer,
+      node.proto.UploadFileResponseTransfer> getUploadFileTransferMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "UploadFileTransfer",
+      requestType = node.proto.UploadFileRequestTransfer.class,
+      responseType = node.proto.UploadFileResponseTransfer.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+  public static io.grpc.MethodDescriptor<node.proto.UploadFileRequestTransfer,
+      node.proto.UploadFileResponseTransfer> getUploadFileTransferMethod() {
+    io.grpc.MethodDescriptor<node.proto.UploadFileRequestTransfer, node.proto.UploadFileResponseTransfer> getUploadFileTransferMethod;
+    if ((getUploadFileTransferMethod = DataServerNodeGrpc.getUploadFileTransferMethod) == null) {
+      synchronized (DataServerNodeGrpc.class) {
+        if ((getUploadFileTransferMethod = DataServerNodeGrpc.getUploadFileTransferMethod) == null) {
+          DataServerNodeGrpc.getUploadFileTransferMethod = getUploadFileTransferMethod =
+              io.grpc.MethodDescriptor.<node.proto.UploadFileRequestTransfer, node.proto.UploadFileResponseTransfer>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "UploadFileTransfer"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  node.proto.UploadFileRequestTransfer.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  node.proto.UploadFileResponseTransfer.getDefaultInstance()))
+              .setSchemaDescriptor(new DataServerNodeMethodDescriptorSupplier("UploadFileTransfer"))
+              .build();
+        }
+      }
+    }
+    return getUploadFileTransferMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<node.proto.RemoveRequest,
@@ -234,9 +296,23 @@ public final class DataServerNodeGrpc {
 
     /**
      */
-    default io.grpc.stub.StreamObserver<node.proto.UploadFileRequest> uploadFile(
+    default void downloadFileTransfer(node.proto.DownloadFileRequest request,
+        io.grpc.stub.StreamObserver<node.proto.DownloadFileResponseTransfer> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDownloadFileTransferMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default void uploadFile(node.proto.UploadFileRequest request,
         io.grpc.stub.StreamObserver<node.proto.UploadFileResponse> responseObserver) {
-      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getUploadFileMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getUploadFileMethod(), responseObserver);
+    }
+
+    /**
+     */
+    default io.grpc.stub.StreamObserver<node.proto.UploadFileRequestTransfer> uploadFileTransfer(
+        io.grpc.stub.StreamObserver<node.proto.UploadFileResponseTransfer> responseObserver) {
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getUploadFileTransferMethod(), responseObserver);
     }
 
     /**
@@ -293,16 +369,32 @@ public final class DataServerNodeGrpc {
      */
     public void downloadFile(node.proto.DownloadFileRequest request,
         io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse> responseObserver) {
-      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDownloadFileMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public io.grpc.stub.StreamObserver<node.proto.UploadFileRequest> uploadFile(
+    public void downloadFileTransfer(node.proto.DownloadFileRequest request,
+        io.grpc.stub.StreamObserver<node.proto.DownloadFileResponseTransfer> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
+          getChannel().newCall(getDownloadFileTransferMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void uploadFile(node.proto.UploadFileRequest request,
         io.grpc.stub.StreamObserver<node.proto.UploadFileResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getUploadFileMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<node.proto.UploadFileRequestTransfer> uploadFileTransfer(
+        io.grpc.stub.StreamObserver<node.proto.UploadFileResponseTransfer> responseObserver) {
       return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
-          getChannel().newCall(getUploadFileMethod(), getCallOptions()), responseObserver);
+          getChannel().newCall(getUploadFileTransferMethod(), getCallOptions()), responseObserver);
     }
 
     /**
@@ -347,10 +439,24 @@ public final class DataServerNodeGrpc {
 
     /**
      */
-    public java.util.Iterator<node.proto.DownloadFileResponse> downloadFile(
+    public node.proto.DownloadFileResponse downloadFile(node.proto.DownloadFileRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getDownloadFileMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public java.util.Iterator<node.proto.DownloadFileResponseTransfer> downloadFileTransfer(
         node.proto.DownloadFileRequest request) {
       return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
-          getChannel(), getDownloadFileMethod(), getCallOptions(), request);
+          getChannel(), getDownloadFileTransferMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public node.proto.UploadFileResponse uploadFile(node.proto.UploadFileRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getUploadFileMethod(), getCallOptions(), request);
     }
 
     /**
@@ -394,6 +500,22 @@ public final class DataServerNodeGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<node.proto.DownloadFileResponse> downloadFile(
+        node.proto.DownloadFileRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getDownloadFileMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<node.proto.UploadFileResponse> uploadFile(
+        node.proto.UploadFileRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getUploadFileMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<node.proto.RemoveResponse> removeFile(
         node.proto.RemoveRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
@@ -411,9 +533,11 @@ public final class DataServerNodeGrpc {
 
   private static final int METHODID_NEW_NODE = 0;
   private static final int METHODID_DOWNLOAD_FILE = 1;
-  private static final int METHODID_REMOVE_FILE = 2;
-  private static final int METHODID_PING_PONG = 3;
-  private static final int METHODID_UPLOAD_FILE = 4;
+  private static final int METHODID_DOWNLOAD_FILE_TRANSFER = 2;
+  private static final int METHODID_UPLOAD_FILE = 3;
+  private static final int METHODID_REMOVE_FILE = 4;
+  private static final int METHODID_PING_PONG = 5;
+  private static final int METHODID_UPLOAD_FILE_TRANSFER = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -440,6 +564,14 @@ public final class DataServerNodeGrpc {
           serviceImpl.downloadFile((node.proto.DownloadFileRequest) request,
               (io.grpc.stub.StreamObserver<node.proto.DownloadFileResponse>) responseObserver);
           break;
+        case METHODID_DOWNLOAD_FILE_TRANSFER:
+          serviceImpl.downloadFileTransfer((node.proto.DownloadFileRequest) request,
+              (io.grpc.stub.StreamObserver<node.proto.DownloadFileResponseTransfer>) responseObserver);
+          break;
+        case METHODID_UPLOAD_FILE:
+          serviceImpl.uploadFile((node.proto.UploadFileRequest) request,
+              (io.grpc.stub.StreamObserver<node.proto.UploadFileResponse>) responseObserver);
+          break;
         case METHODID_REMOVE_FILE:
           serviceImpl.removeFile((node.proto.RemoveRequest) request,
               (io.grpc.stub.StreamObserver<node.proto.RemoveResponse>) responseObserver);
@@ -458,9 +590,9 @@ public final class DataServerNodeGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_UPLOAD_FILE:
-          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.uploadFile(
-              (io.grpc.stub.StreamObserver<node.proto.UploadFileResponse>) responseObserver);
+        case METHODID_UPLOAD_FILE_TRANSFER:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.uploadFileTransfer(
+              (io.grpc.stub.StreamObserver<node.proto.UploadFileResponseTransfer>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -478,18 +610,32 @@ public final class DataServerNodeGrpc {
                 service, METHODID_NEW_NODE)))
         .addMethod(
           getDownloadFileMethod(),
-          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               node.proto.DownloadFileRequest,
               node.proto.DownloadFileResponse>(
                 service, METHODID_DOWNLOAD_FILE)))
         .addMethod(
+          getDownloadFileTransferMethod(),
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+            new MethodHandlers<
+              node.proto.DownloadFileRequest,
+              node.proto.DownloadFileResponseTransfer>(
+                service, METHODID_DOWNLOAD_FILE_TRANSFER)))
+        .addMethod(
           getUploadFileMethod(),
-          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
               node.proto.UploadFileRequest,
               node.proto.UploadFileResponse>(
                 service, METHODID_UPLOAD_FILE)))
+        .addMethod(
+          getUploadFileTransferMethod(),
+          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
+            new MethodHandlers<
+              node.proto.UploadFileRequestTransfer,
+              node.proto.UploadFileResponseTransfer>(
+                service, METHODID_UPLOAD_FILE_TRANSFER)))
         .addMethod(
           getRemoveFileMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -554,7 +700,9 @@ public final class DataServerNodeGrpc {
               .setSchemaDescriptor(new DataServerNodeFileDescriptorSupplier())
               .addMethod(getNewNodeMethod())
               .addMethod(getDownloadFileMethod())
+              .addMethod(getDownloadFileTransferMethod())
               .addMethod(getUploadFileMethod())
+              .addMethod(getUploadFileTransferMethod())
               .addMethod(getRemoveFileMethod())
               .addMethod(getPingPongMethod())
               .build();

@@ -9,62 +9,56 @@ public interface DownloadFileResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>bytes file_data = 1;</code>
-   * @return The fileData.
-   */
-  com.google.protobuf.ByteString getFileData();
-
-  /**
-   * <code>bool success = 2;</code>
+   * <code>bool success = 1;</code>
    * @return The success.
    */
   boolean getSuccess();
 
   /**
-   * <code>string error_message = 3;</code>
-   * @return The errorMessage.
+   * <code>string file_name = 2;</code>
+   * @return The fileName.
    */
-  java.lang.String getErrorMessage();
+  java.lang.String getFileName();
   /**
-   * <code>string error_message = 3;</code>
-   * @return The bytes for errorMessage.
+   * <code>string file_name = 2;</code>
+   * @return The bytes for fileName.
    */
   com.google.protobuf.ByteString
-      getErrorMessageBytes();
+      getFileNameBytes();
 
   /**
-   * <code>string node_ip = 4;</code>
+   * <code>string node_ip = 3;</code>
    * @return The nodeIp.
    */
   java.lang.String getNodeIp();
   /**
-   * <code>string node_ip = 4;</code>
+   * <code>string node_ip = 3;</code>
    * @return The bytes for nodeIp.
    */
   com.google.protobuf.ByteString
       getNodeIpBytes();
 
   /**
-   * <code>string node_port = 5;</code>
+   * <code>string node_port = 4;</code>
    * @return The nodePort.
    */
   java.lang.String getNodePort();
   /**
-   * <code>string node_port = 5;</code>
+   * <code>string node_port = 4;</code>
    * @return The bytes for nodePort.
    */
   com.google.protobuf.ByteString
       getNodePortBytes();
 
   /**
-   * <code>string file_name = 6;</code>
-   * @return The fileName.
+   * <code>string error_message = 5;</code>
+   * @return The errorMessage.
    */
-  java.lang.String getFileName();
+  java.lang.String getErrorMessage();
   /**
-   * <code>string file_name = 6;</code>
-   * @return The bytes for fileName.
+   * <code>string error_message = 5;</code>
+   * @return The bytes for errorMessage.
    */
   com.google.protobuf.ByteString
-      getFileNameBytes();
+      getErrorMessageBytes();
 }

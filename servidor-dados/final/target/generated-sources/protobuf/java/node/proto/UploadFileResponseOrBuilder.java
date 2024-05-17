@@ -9,22 +9,22 @@ public interface UploadFileResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string file_name = 1;</code>
+   * <code>bool success = 1;</code>
+   * @return The success.
+   */
+  boolean getSuccess();
+
+  /**
+   * <code>string file_name = 2;</code>
    * @return The fileName.
    */
   java.lang.String getFileName();
   /**
-   * <code>string file_name = 1;</code>
+   * <code>string file_name = 2;</code>
    * @return The bytes for fileName.
    */
   com.google.protobuf.ByteString
       getFileNameBytes();
-
-  /**
-   * <code>bool success = 2;</code>
-   * @return The success.
-   */
-  boolean getSuccess();
 
   /**
    * <code>string node_ip = 3;</code>
@@ -49,4 +49,16 @@ public interface UploadFileResponseOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNodePortBytes();
+
+  /**
+   * <code>string error_message = 5;</code>
+   * @return The errorMessage.
+   */
+  java.lang.String getErrorMessage();
+  /**
+   * <code>string error_message = 5;</code>
+   * @return The bytes for errorMessage.
+   */
+  com.google.protobuf.ByteString
+      getErrorMessageBytes();
 }
