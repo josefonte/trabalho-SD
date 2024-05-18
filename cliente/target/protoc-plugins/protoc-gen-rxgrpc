@@ -1,0 +1,8 @@
+#!/bin/sh
+
+CP="/Users/xiquita/.m2/repository/com/salesforce/servicelibs/rx3grpc/1.2.4/rx3grpc-1.2.4.jar"
+ARGS=""
+JVMARGS=""
+
+"/Library/Java/JavaVirtualMachines/jdk-17.0.2.jdk/Contents/Home/bin/java" $JVMARGS -cp $CP com.salesforce.rx3grpc.Rx3GrpcGenerator $ARGS
+
