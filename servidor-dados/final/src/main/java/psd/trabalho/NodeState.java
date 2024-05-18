@@ -18,6 +18,13 @@ public class NodeState {
 
     public NodeState() {}
 
+    public NodeState(String ip_address, String ip_port, byte[] key) {
+        this.ip_address = ip_address;
+        this.ip_port = ip_port;
+        this.key = key;
+    }
+
+
 
     public void setRing(TreeMap<byte[], VirtualNode<NodeState>> ring) {
         this.ring = cloneRingTreeMap(ring);

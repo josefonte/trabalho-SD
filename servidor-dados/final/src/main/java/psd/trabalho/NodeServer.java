@@ -52,12 +52,10 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
 
     public NodeServer(String ip_add, String ip_port) throws NoSuchAlgorithmException {
         super();
-        //initializing node info
         nodeState.setIpAddress( ip_add);
         nodeState.setIpPort(ip_port);
         nodeState.setKey(hash.generateHash(ip_add + "-" + ip_port));
         serverStorageFilePath = "./final/src/main/java/psd/trabalho/files_server_" + nodeState.getIpPort() +"/";
-
         System.out.println("#### Node created: " + ip_add + " | " + ip_port + " | " + nodeState.getKey());
     }
 
@@ -140,10 +138,8 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
 
     public void addNode(String ip_add, String ip_port) throws NoSuchAlgorithmException, IOException {
         System.out.println("#### Adding node: " + ip_add + ":" + ip_port);
-        NodeState newNode = new NodeState();
-        newNode.setKey(hash.generateHash(ip_add + "-" + ip_port));
-        newNode.setIpAddress(ip_add);
-        newNode.setIpPort(ip_port);
+        NodeState newNode = new NodeState(ip_add,ip_port,hash.generateHash(ip_add + "-" + ip_port));
+
         for (int i = 0; i < number_vNodes; i++) {
             VirtualNode<NodeState> vNode = new VirtualNode<>(newNode,i);
             if (!nodeState.getRing().containsKey(vNode.getKey())){
@@ -440,8 +436,6 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
             VirtualNode<NodeState> storedNode = lookupClosestNode(file_key);
             if (storedNode.isVirtualNodeOf(nodeState)){
                System.out.println("#### File removed -> " + file_name );
-               File file = new File(nodeState.getStorage().get(file_key));
-               file.delete();
                nodeState.removeStorage(file_key);
                return RemoveResponse.newBuilder()
                        .setSuccess(true)
