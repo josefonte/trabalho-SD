@@ -388,7 +388,7 @@ public class Client {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
             }).start();
 
@@ -491,9 +491,9 @@ public class Client {
             String leaveResponse = in.readLine();
             System.out.println(leaveResponse);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-
+        }
+        catch (Exception e) {
+            System.out.println("Leaving session...");
         }
     }
 
