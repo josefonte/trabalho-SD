@@ -4,18 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="stuff">
-      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/esgaio.jpg" afterDir="false" />
+    <list default="true" id="d3e60685-23e0-4860-93dc-9d8c35e3cdd8" name="Changes" comment="download and upload fully resilient">
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/banza.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/eliseu.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/felix.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/marega.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/picanhas.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/video.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/vitinha.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/client_downloads/zaidu.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files/1node-noMIGR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files/2nodes-noMIGR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files/3nodes-noMIGR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files/banza.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files/felix.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files/vitinha.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8000/paulinho.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8000/video.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/banza.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/marega.jpg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/picanhas.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/vitinha.jpg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/zaidu.jpeg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8002/eliseu.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8002/felix.jpeg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/FakeClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/picanhas.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client/picanhas.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/marega.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8001/marega.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/paulinho.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8000/paulinho.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server/video.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_server_8000/video.mp4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/java/psd/trabalho/NodeState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/src/main/proto/Node.proto" beforeDir="false" afterPath="$PROJECT_DIR$/final/src/main/proto/Node.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/grpc-java/node/proto/DataServerNodeGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/NodeProto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/final/target/generated-sources/protobuf/java/node/proto/Rx3DataServerNodeGrpc.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +89,7 @@
     "git-widget-placeholder": "main",
     "jdk.selected.JAVA_MODULE": "openjdk-21",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/josef/Desktop/uni/SD-PSD/trabalho/trabalho-SD/servidor-dados/final/src/main/java/psd/trabalho/files_client",
+    "last_opened_file_path": "/Users/josef/Desktop/uni/SD-PSD/trabalho/trabalho-SD/servidor-dados/final/src/main/java/psd/trabalho/files",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -84,6 +104,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files" />
       <recent name="$PROJECT_DIR$/final/src/main/java/psd/trabalho/files_client" />
       <recent name="$PROJECT_DIR$/final/src/main/java/files_client" />
       <recent name="$PROJECT_DIR$/final/src/main/java/files_server" />
@@ -172,7 +193,7 @@
       <workItem from="1715776404285" duration="25710000" />
       <workItem from="1715818822094" duration="13883000" />
       <workItem from="1715884274271" duration="124000" />
-      <workItem from="1715884460112" duration="36650000" />
+      <workItem from="1715884460112" duration="52409000" />
     </task>
     <task id="LOCAL-00001" summary="final servidor de dados - launch and connection between servers working.">
       <option name="closed" value="true" />
@@ -214,7 +235,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715924612519</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="download and upload fully resilient">
+      <option name="closed" value="true" />
+      <created>1715963929316</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1715963929316</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +267,7 @@
     <MESSAGE value="upload and download done very nice very cool" />
     <MESSAGE value="remove file done too" />
     <MESSAGE value="stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="stuff" />
+    <MESSAGE value="download and upload fully resilient" />
+    <option name="LAST_COMMIT_MESSAGE" value="download and upload fully resilient" />
   </component>
 </project>

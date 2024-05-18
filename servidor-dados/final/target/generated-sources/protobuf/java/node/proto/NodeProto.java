@@ -113,7 +113,7 @@ public final class NodeProto {
       "\n\013PingRequest\022\017\n\007message\030\001 \001(\t\022\017\n\007node_i" +
       "p\030\002 \001(\t\022\021\n\tnode_port\030\003 \001(\t\"C\n\014PingRespon" +
       "se\022\017\n\007message\030\001 \001(\t\022\017\n\007node_ip\030\002 \001(\t\022\021\n\t" +
-      "node_port\030\003 \001(\t2\322\004\n\016DataServerNode\022D\n\007Ne" +
+      "node_port\030\003 \001(\t2\316\004\n\016DataServerNode\022D\n\007Ne" +
       "wNode\022\032.node.proto.NewNodeRequest\032\033.node" +
       ".proto.NewNodeResponse\"\000\022S\n\014DownloadFile" +
       "\022\037.node.proto.DownloadFileRequest\032 .node" +
@@ -126,10 +126,10 @@ public final class NodeProto {
       ".proto.UploadFileRequestTransfer\032&.node." +
       "proto.UploadFileResponseTransfer\"\000(\001\022E\n\n" +
       "RemoveFile\022\031.node.proto.RemoveRequest\032\032." +
-      "node.proto.RemoveResponse\"\000\022?\n\010PingPong\022" +
-      "\027.node.proto.PingRequest\032\030.node.proto.Pi" +
-      "ngResponse\"\000B\031\n\nnode.protoB\tNodeProtoP\001b" +
-      "\006proto3"
+      "node.proto.RemoveResponse\"\000\022;\n\004Ping\022\027.no" +
+      "de.proto.PingRequest\032\030.node.proto.PingRe" +
+      "sponse\"\000B\031\n\nnode.protoB\tNodeProtoP\001b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
