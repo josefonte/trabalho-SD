@@ -33,36 +33,35 @@ import node.proto.PingResponse;
 import node.proto.RemoveRequest;
 import node.proto.RemoveResponse;
 public class FakeClient {
-
     private static  String  filesPath = "./final/src/main/java/psd/trabalho/files/";
     private static String  downloadsPath = "./final/src/main/java/psd/trabalho/client_downloads/";
 
+
     public static void main(String[] args) throws IOException, InterruptedException {
-
-        fileUpload("localhost",8000,"eliseu.jpg");
-        fileUpload("localhost",8000,"marega.jpg");
-        fileUpload("localhost",8000,"esgaio.jpg");
-        fileUpload("localhost",8000,"paulinho.jpeg");
-        fileUpload("localhost",8000,"picanhas.jpg");
-        fileUpload("localhost",8000,"video.mp4");
-        fileUpload("localhost",8000,"zaidu.jpeg");
-        fileUpload("localhost",8000,"banza.jpg");
-        fileUpload("localhost",8000,"vitinha.jpg");
-        fileUpload("localhost",8000,"felix.jpeg");
-
-        //removeFile("localhost",8000,"paulinho.jpeg");
-
-
-       // downloadFile("localhost",8000,"eliseu.jpg");
-       // downloadFile("localhost",8000,"marega.jpg");
-       // downloadFile("localhost",8000,"paulinho.jpeg");
-       // downloadFile("localhost",8000,"picanhas.jpg");
-       // downloadFile("localhost",8000,"video.mp4");
-
-
-
+        if (args[0].equals("1")) {
+            fileUpload("localhost",8000,"eliseu.jpg");
+            fileUpload("localhost",8000,"marega.jpg");
+            fileUpload("localhost",8000,"esgaio.jpg");
+            fileUpload("localhost",8000,"paulinho.jpeg");
+            fileUpload("localhost",8000,"picanhas.jpg");
+            fileUpload("localhost",8000,"video.mp4");
+            fileUpload("localhost",8000,"zaidu.jpeg");
+            fileUpload("localhost",8000,"banza.jpg");
+            fileUpload("localhost",8000,"vitinha.jpg");
+            fileUpload("localhost",8000,"felix.jpeg");
+        }
+        if (args[0].equals("2")) {
+            downloadFile("localhost",8000,"eliseu.jpg");
+            downloadFile("localhost",8000,"marega.jpg");
+            downloadFile("localhost",8000,"paulinho.jpeg");
+            downloadFile("localhost",8000,"picanhas.jpg");
+            downloadFile("localhost",8000,"video.mp4");
+        }
+        if (args[0].equals("3")) {
+            removeFile("localhost",8000,"eliseu.jpg");
+            removeFile("localhost",8000,"marega.jpg");
+        }
     }
-
 
     private static ManagedChannel  createChannel(String ip, String port){
         ManagedChannel channel = ManagedChannelBuilder.forAddress(ip, Integer.parseInt(port))
@@ -147,6 +146,7 @@ public class FakeClient {
         channel.shutdown();
 
     }
+
     private static void writeBufferToFile(List<node.proto.DownloadFileResponseTransfer> chunkBuffer, FileOutputStream fileOutputStream) {
         try {
             System.out.println("Writing buffer to file");

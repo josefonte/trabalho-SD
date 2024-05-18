@@ -63,13 +63,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
 
 
 
-    /*START -> method to start the node
-    * @param neighborNodes -> list of neighbor nodes
-    * - add virtual nodes to the ring
-    * - open server socket
-    * - open connections to neighbor nodes
-    * - add neighbor nodes to the ring
-    * */
+    //START -> method to start the node
     public void start( ArrayList<Pair<String, String>> neighborNodes) throws NoSuchAlgorithmException, IOException, InterruptedException {
        System.out.println("#### Starting node: " + nodeState.getIpAddress() + " | " + nodeState.getIpPort() + " | " + nodeState.getKey());
 
@@ -172,13 +166,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
         return nodes.get(closestKey);
     }
 
-
     //Migrate keys -> method to migrate keys from a node to another
-    /*
-    * -> check if current keys belong to the node
-    * -> if not, upload them to the correct node
-    * -> remove the keys from the current node
-    * */
     private void migrateKeys() throws NoSuchAlgorithmException, IOException {
         System.out.println("\n\n#### Key Migration | Starting Migration");
         for (byte[] keyStored : nodeState.getStorage().keySet()){
@@ -266,9 +254,17 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
         return true;
     }
 
+    // Aux method to write buffer to file - happens every 100 chunks
+    private void writeBufferToFile(List<UploadFileRequestTransfer> chunkBuffer, FileOutputStream fileOutputStream) {
+        try {
+            for (UploadFileRequestTransfer chunk : chunkBuffer) {fileOutputStream.write(chunk.getFileData().toByteArray());}
+            fileOutputStream.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    //RPC METHODS
-
+    // ############ RPC METHODS ############
 
     //newNode -> used to add a new node to the ring
     @Override
@@ -356,7 +352,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
 
     //Upload -> used to upload a file to the storage
     @Override
-    public Single<UploadFileResponse> uploadFile(Single<UploadFileRequest> request){
+    public Single<UploadFileResponse> uploadFile(Single<UploadFileRequest> request) {
         return request.map(req -> {
             System.out.println("\n#### Upload request: " + req.getFileName());
 
@@ -379,6 +375,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
             return resp.build();
         });
     }
+
 
     @Override
     public Single<UploadFileResponseTransfer> uploadFileTransfer(Flowable<UploadFileRequestTransfer> request) {
@@ -430,15 +427,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
                     return UploadFileResponseTransfer.newBuilder().setSuccess(false).build();
                 });
     }
-    // Aux method to write buffer to file - happens every 100 chunks
-    private void writeBufferToFile(List<UploadFileRequestTransfer> chunkBuffer, FileOutputStream fileOutputStream) {
-        try {
-            for (UploadFileRequestTransfer chunk : chunkBuffer) {fileOutputStream.write(chunk.getFileData().toByteArray());}
-            fileOutputStream.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     //Remove -> used to remove a file from the storage
     @Override
