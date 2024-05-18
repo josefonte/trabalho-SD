@@ -369,7 +369,7 @@ userAuth(Socket,User) ->
                                             io:format("Updating ratings on session_manager\n"),
                                             session_manager ! {{update_and_get_all_files, User, Album, ParsedFiles}, self()},
                                             receive
-                                                {ok, AllFiles} ->
+                                                {{ok, AllFiles},session_manager} ->
                                                     io:format("all ratings: ~p~n", [AllFiles]);
                                                 {album_not_found, _} ->
                                                     AllFiles = #{}

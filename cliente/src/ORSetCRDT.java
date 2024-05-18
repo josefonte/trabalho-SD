@@ -39,7 +39,7 @@ public class ORSetCRDT {
     public void add(String name, String pid) {
         Long pid_long = Long.parseLong(pid);
         lock.lock();
-        int seqNum = cc.getOrDefault(pid_long,0)+1;
+        int seqNum = cc.getOrDefault(pid_long,1)+1;
         cc.put(pid_long,seqNum);
         Dot dot = new Dot(pid,seqNum);
         HashSet<Dot> dots = new HashSet<>();
@@ -48,9 +48,14 @@ public class ORSetCRDT {
         lock.unlock();
     }
 
-    public void simpleAdd(String name) {
+    public void simpleAdd(String name,String pid) {
+        Long pid_long = Long.parseLong(pid);
         lock.lock();
-        m.put(name, new HashSet<>());
+        Dot dot = new Dot(pid,1);
+        cc.put(pid_long,1);
+        HashSet<Dot> dots = new HashSet<>();
+        dots.add(dot);
+        m.put(name, dots);
         lock.unlock();
     }
 
@@ -111,7 +116,6 @@ public class ORSetCRDT {
             System.out.println("Novo conjunto de " + this.name+" : " + new_m.keySet());
         }
         m = new_m;
-        System.out.println("New m: " + m);
         lock.unlock();
 
 

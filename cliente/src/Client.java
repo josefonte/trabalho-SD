@@ -294,7 +294,7 @@ public class Client {
                 if (user.isEmpty()) {
                     continue;
                 }
-                utilizadores.simpleAdd(user.substring(1, user.length() - 1));
+                utilizadores.simpleAdd(user.substring(1, user.length() - 1),pid_string);
             }
 
             // #{"file" => "7","file2" => "null"}
@@ -312,16 +312,19 @@ public class Client {
                 String[] parts = file.split(" => ");
                 String file_name = parts[0].trim();
                 String file_rating = parts[1].trim();
+                file_name = file_name.substring(1, file_name.length() - 1);
+                file_rating = file_rating.substring(1, file_rating.length() - 1);
 
-
-                ficheiros.simpleAdd(file_name.substring(1, file_name.length() - 1));
+                ficheiros.simpleAdd(file_name,pid_string);
                 if (!file_rating.equals("null")){
 
-                    System.out.println("Adding file: " + file_name + " with rating: " + file_rating);
+                    System.out.println("Adding file " + file_name + " with rating: " + file_rating);
 
                     rates.put(file_name,file_rating);
                 }
             }
+            System.out.println("Files: " + ficheiros.elements());
+            System.out.println("Users: " + utilizadores.elements());
 
             subscriber.connect("tcp://localhost:" + 5556);
             subscriber.subscribe(album.getBytes());
@@ -458,7 +461,7 @@ public class Client {
 
             out.println("update_album," + album + "," + usersToSend + ",{" + filesToSend + "}");
             String response = in.readLine();
-            System.out.println(response); // DEBUG
+            System.out.println(response);
 
             out.println("session_leave," + User);
             String leaveResponse = in.readLine();

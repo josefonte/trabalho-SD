@@ -24,6 +24,34 @@ remove_file(Album,Name) -> rpc({remove_file,Album,Name}).
 rate_file(Album,Name,Rate) -> rpc({rate_file,Album,Name,Rate}).
 
 
+
+add_files(OldFiles, Files) ->
+    NewFiles = maps:fold(
+        fun(Name, Ratings, Acc) ->
+            case maps:find(Name, Files) of
+                {ok, NewRatings} ->
+                    MergedRatings = maps:merge(Ratings,NewRatings),
+                    maps:put(Name, MergedRatings, Acc);   
+                error ->
+                    Acc
+            end
+        end,
+        #{},
+        OldFiles
+    ),
+    maps:fold(
+        fun(Name, Ratings, Acc) ->
+            case maps:find(Name, OldFiles) of
+                error ->
+                    maps:put(Name, Ratings, Acc);
+                _ ->
+                    Acc  
+            end        
+        end,
+        NewFiles,
+        Files
+    ).
+
 loop(Map) ->
     receive
         {{create_album,Album},From} ->
@@ -142,13 +170,13 @@ loop(Map) ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map);
                 {ok, OldFiles} ->
-                    io:format("file_manager: OldFiles: ~p~n", [OldFiles])
-                    % io:format("file_manager: AllFiles: ~p~n", [AllFiles]),
-                    % NewFiles = update_all_files(OldFiles, AllFiles),
-                    % io:format("file_manager: NewFiles: ~p~n", [NewFiles]),
-                    % NewMap = maps:put(Album, NewFiles, Map),
-                    % From ! {ok, ?MODULE},
-                    % loop(NewMap)
+                    io:format("file_manager: OldFiles: ~p~n", [OldFiles]),
+                    io:format("file_manager: AllFiles: ~p~n", [AllFiles]),
+                    NewFiles = add_files(OldFiles, AllFiles),
+                    io:format("file_manager: NewFiles: ~p~n", [NewFiles]),
+                    NewMap = maps:put(Album, NewFiles, Map),
+                    From ! {ok, ?MODULE},
+                    loop(NewMap)
             end;
 
         {{get_album_files, Album, User}, From} ->

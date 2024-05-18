@@ -7,7 +7,29 @@ start() -> register(?MODULE, spawn(fun() -> loop([], #{}) end)).
 
 add_files(OldFiles, NewFiles, User) ->
     maps:fold(fun(File, Rating, Acc) ->
-                    update_file(Acc, File, Rating, User) end, OldFiles, NewFiles).
+                    checkRatingAndUpdate(Acc, File, Rating, User) end, OldFiles, NewFiles).
+
+
+checkRatingAndUpdate(OldFiles, File, Rating, User) ->
+    case Rating of
+        "null" ->
+            add_file_empty(OldFiles,File);
+        _ ->
+            case string:to_integer(Rating) of
+                {error, _} ->
+                    add_file_empty(OldFiles,File);
+                {RatingInt, _} -> update_file(OldFiles, File, RatingInt, User)
+            end
+    end.
+
+
+add_file_empty(OldFiles, File) ->
+    case maps:is_key(File, OldFiles) of
+        true ->
+            OldFiles;
+        false ->
+            maps:put(File, #{}, OldFiles)
+    end.
 
 update_file(OldFiles, File, Rating, User) ->
     case maps:is_key(File, OldFiles) of
@@ -104,12 +126,12 @@ handle({update_and_get_all_files, User, Album, Files}, _, Users, Albums) ->
                     NewFiles = add_files(OldFiles, Files, User),
                     io:format("session_manager: NewFiles: ~p~n", [NewFiles]),
                     NewAlbum = maps:put(Album, NewFiles, Albums),
-                    {{ok, NewAlbum}, NewFiles, Users, NewAlbum};
+                    {{ok, NewFiles}, Users, NewAlbum};
                 error ->
                     NewFiles = add_files(#{}, Files, User),
                     io:format("session_manager: NewAlbum: ~p~n", [NewFiles]),
                     NewAlbum = maps:put(Album, NewFiles, Albums),
-                    {{ok, NewAlbum}, NewFiles, Users, NewAlbum}
+                    {{ok, NewFiles}, Users, NewAlbum}
             end;
         false ->
             {user_not_found, Users, Albums}
