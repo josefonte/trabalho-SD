@@ -335,31 +335,30 @@ public class Client {
                     ArrayList<Long> pending_pids = new ArrayList<>();
                     ArrayList<String> pending_messages = new ArrayList<>();
                     while (!Thread.currentThread().isInterrupted()) {
-                    String receivedMessage = new String(subscriber.recv());
-                    String[] parts = receivedMessage.split(":");
-                    String type = parts[1];
-                    if (type.equals("chat")) {
-                        vvlock.lock();
-                        handle_chat(parts,versionVector,pending_messages,pending_pids,pending_vv,pid);
-                        vvlock.unlock();
-                    } else {
-                        String mpid = parts[2];
-                        if (mpid.equals(Long.toString(pid))){
-                            continue;
-                        }
-                        if (parts[3].equals("users")){
-                            ORSetCRDT utilizadores_m = ORSetCRDT.deserialize(parts[4]);
-                            utilizadores.join(utilizadores_m);
-                        }
-                        else if (parts[3].equals("files")){
-                            System.out.println("Received: " + parts);
-                            ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
-                            ficheiros.join(ficheiros_m);
+                        String receivedMessage = new String(subscriber.recv());
+                        String[] parts = receivedMessage.split(":");
+                        String type = parts[1];
+                        if (type.equals("chat")) {
+                            vvlock.lock();
+                            handle_chat(parts,versionVector,pending_messages,pending_pids,pending_vv,pid);
+                            vvlock.unlock();
+                        } else {
+                            String mpid = parts[2];
+                            if (mpid.equals(Long.toString(pid))){
+                                continue;
+                            }
+                            if (parts[3].equals("users")){
+                                ORSetCRDT utilizadores_m = ORSetCRDT.deserialize(parts[4]);
+                                utilizadores.join(utilizadores_m);
+                            }
+                            else if (parts[3].equals("files")){
+                                System.out.println("Received: " + parts);
+                                ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
+                                ficheiros.join(ficheiros_m);
+                            }
                         }
                     }
-
-                }}
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }).start();
@@ -443,7 +442,7 @@ public class Client {
 //                    String response = in.readLine();
 //                    System.out.println(response); // DEBUG
 
-            }
+                }
                 command = reader.readLine();
             }
 
@@ -460,6 +459,10 @@ public class Client {
             out.println("update_album," + album + "," + usersToSend + ",{" + filesToSend + "}");
             String response = in.readLine();
             System.out.println(response); // DEBUG
+
+            out.println("session_leave," + User);
+            String leaveResponse = in.readLine();
+            System.out.println(leaveResponse);
 
         } catch (Exception e) {
             e.printStackTrace();

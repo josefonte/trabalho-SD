@@ -78,40 +78,23 @@ parse_users(UsersData) ->
     Users = lists:map(fun(User) -> string:strip(User) end, UsersList),
     sets:from_list(Users).
 
-% % "{file2=>{nuno=>10}|file3=>{nuno=>4}}" -> {file2, {nuno, 10}}, {file3, {nuno, 4}}
-% parse_files(FilesData) ->
-%     CleanData = string:replace(string:replace(FilesData, "{", "", all), "}", "", all),
-%     FilesList = re:split(CleanData, "\\|", [{return, list}]),
-%     Files = lists:map(fun(File) ->
-%         [NamePart | RatingsPart] = re:split(File, "=>", [{return, list}]),
-%         Name = string:strip(NamePart),
-%         Ratings = parse_ratings(string:strip(string:join(RatingsPart, "=>"))),
-%         {Name, Ratings}
-%     end, FilesList),
-%     maps:from_list(Files).
-
-% % "{nuno=>10}" -> {nuno, 10}
-% parse_ratings(RatingsData) ->
-%     CleanData = string:replace(string:replace(RatingsData, "{", "", all), "}", "", all),
-%     RatingsList = re:split(CleanData, ",", [{return, list}]),
-%     Ratings = lists:map(fun(Rating) ->
-%         [User, Rate] = re:split(Rating, "=>", [{return, list}]),
-%         {string:strip(User), list_to_integer(string:strip(Rate))}
-%     end, RatingsList),
-%     maps:from_list(Ratings).
-
-
 % "{file=>10|file2=>null}" -> {file, 10}, {file2, null}
 parse_files_ratings(FilesData) ->
-    CleanData = string:replace(string:replace(FilesData, "{", "", all), "}", "", all),
-    FilesList = re:split(CleanData, "\\|", [{return, list}]),
-    Files = lists:map(fun(File) ->
-        [NamePart , RatingsPart] = re:split(File, "=>", [{return, list}]),
-        Name = string:strip(NamePart),
-        Rating = string:strip(RatingsPart),
-        {Name, Rating}
-    end, FilesList),
-    maps:from_list(Files).
+    CleanData = lists:flatten(string:replace(string:replace(FilesData, "{", "", all), "}", "", all)),
+    io:format("CleanData: ~p~n", [CleanData]),
+    case CleanData of
+        "" ->
+            maps:new();
+        _ ->
+            FilesList = re:split(CleanData, "\\|", [{return, list}]),
+            Files = lists:map(fun(File) ->
+                [NamePart , RatingsPart] = re:split(File, "=>", [{return, list}]),
+                Name = string:strip(NamePart),
+                Rating = string:strip(RatingsPart),
+                {Name, Rating}
+            end, FilesList),
+            maps:from_list(Files)
+    end.
 
 
 userAuth(Socket,User) ->
@@ -361,21 +344,38 @@ userAuth(Socket,User) ->
 
                 ["update_album", Album, Users, Files] ->
                     ParsedUsers = parse_users(Users),
+                    io:format("Files: ~p~n", [Files]),
+                    ParsedFiles = parse_files_ratings(Files),
+                    io:format("ParsedFiles: ~p~n", [ParsedFiles]),
                     case verifyUser(Album,User) of
                         false ->
                             gen_tcp:send(Socket, "You must be a user of the album to update it\n");
                         true ->
                             case isLastUserOnSession(User) of
                                 false ->
-                                    gen_tcp:send(Socket, "You must be the last user on the album to update it\n");
+                                    io:format("Updating ratings on session_manager\n"),
+                                    session_manager ! {{update_ratings, User, Album, ParsedFiles}, self()},
+                                    receive
+                                        {ok, _} ->
+                                            gen_tcp:send(Socket, "Ratings updated\n");
+                                        {album_not_found, _} ->
+                                            gen_tcp:send(Socket, "Album not found\n")
+                                    end;
                                 true ->
+                                    io:format("IM LAST USER AND IM GOING TO UPDATE ALBUM\n"),
                                     user_manager ! {{update_album, Album, ParsedUsers}, self()},
                                     receive
                                         {ok, _} ->
-                                            io:format("Files: ~p~n", [Files]),
-                                            ParsedFiles = parse_files_ratings(Files),
-                                            io:format("ParsedFiles: ~p~n", [ParsedFiles]),
-                                            file_manager ! {{update_album, Album, ParsedFiles,User}, self()},
+                                            io:format("Updating ratings on session_manager\n"),
+                                            session_manager ! {{update_and_get_all_files, User, Album, ParsedFiles}, self()},
+                                            receive
+                                                {ok, AllFiles} ->
+                                                    io:format("all ratings: ~p~n", [AllFiles]);
+                                                {album_not_found, _} ->
+                                                    AllFiles = #{}
+                                            end,
+                                            io:format("Updating files on file_manager\n"),
+                                            file_manager ! {{update_album, Album, AllFiles}, self()},
                                             receive
                                                 {ok, _} ->
                                                     gen_tcp:send(Socket, "Album updated\n");
