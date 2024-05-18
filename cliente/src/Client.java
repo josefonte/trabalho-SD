@@ -278,6 +278,10 @@ public class Client {
             ReentrantLock vvlock = new ReentrantLock();
             VersionVector versionVector = new VersionVector();
 
+            out.println("session_join," + User);
+            String sessionResponse = in.readLine();
+            System.out.println(sessionResponse);
+
             out.println("get_album_info," + album);
 
             // ["nuno","joao","tony"]
@@ -290,7 +294,7 @@ public class Client {
                 if (user.isEmpty()) {
                     continue;
                 }
-                utilizadores.simpleAdd(user.substring(1, user.length() - 1));
+                utilizadores.simpleAdd(user.substring(1, user.length() - 1),pid_string);
             }
 
             // #{"file" => "7","file2" => "null"}
@@ -308,16 +312,19 @@ public class Client {
                 String[] parts = file.split(" => ");
                 String file_name = parts[0].trim();
                 String file_rating = parts[1].trim();
+                file_name = file_name.substring(1, file_name.length() - 1);
+                file_rating = file_rating.substring(1, file_rating.length() - 1);
 
-
-                ficheiros.simpleAdd(file_name.substring(1, file_name.length() - 1));
+                ficheiros.simpleAdd(file_name,pid_string);
                 if (!file_rating.equals("null")){
 
-                    System.out.println("Adding file: " + file_name + " with rating: " + file_rating);
+                    System.out.println("Adding file " + file_name + " with rating: " + file_rating);
 
                     rates.put(file_name,file_rating);
                 }
             }
+            System.out.println("Files: " + ficheiros.elements());
+            System.out.println("Users: " + utilizadores.elements());
 
             subscriber.connect("tcp://localhost:" + 5556);
             subscriber.subscribe(album.getBytes());
@@ -331,31 +338,30 @@ public class Client {
                     ArrayList<Long> pending_pids = new ArrayList<>();
                     ArrayList<String> pending_messages = new ArrayList<>();
                     while (!Thread.currentThread().isInterrupted()) {
-                    String receivedMessage = new String(subscriber.recv());
-                    String[] parts = receivedMessage.split(":");
-                    String type = parts[1];
-                    if (type.equals("chat")) {
-                        vvlock.lock();
-                        handle_chat(parts,versionVector,pending_messages,pending_pids,pending_vv,pid);
-                        vvlock.unlock();
-                    } else {
-                        String mpid = parts[2];
-                        if (mpid.equals(Long.toString(pid))){
-                            continue;
-                        }
-                        if (parts[3].equals("users")){
-                            ORSetCRDT utilizadores_m = ORSetCRDT.deserialize(parts[4]);
-                            utilizadores.join(utilizadores_m);
-                        }
-                        else if (parts[3].equals("files")){
-                            System.out.println("Received: " + parts);
-                            ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
-                            ficheiros.join(ficheiros_m);
+                        String receivedMessage = new String(subscriber.recv());
+                        String[] parts = receivedMessage.split(":");
+                        String type = parts[1];
+                        if (type.equals("chat")) {
+                            vvlock.lock();
+                            handle_chat(parts,versionVector,pending_messages,pending_pids,pending_vv,pid);
+                            vvlock.unlock();
+                        } else {
+                            String mpid = parts[2];
+                            if (mpid.equals(Long.toString(pid))){
+                                continue;
+                            }
+                            if (parts[3].equals("users")){
+                                ORSetCRDT utilizadores_m = ORSetCRDT.deserialize(parts[4]);
+                                utilizadores.join(utilizadores_m);
+                            }
+                            else if (parts[3].equals("files")){
+                                System.out.println("Received: " + parts);
+                                ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
+                                ficheiros.join(ficheiros_m);
+                            }
                         }
                     }
-
-                }}
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }).start();
@@ -439,7 +445,7 @@ public class Client {
 //                    String response = in.readLine();
 //                    System.out.println(response); // DEBUG
 
-            }
+                }
                 command = reader.readLine();
             }
 
@@ -455,7 +461,11 @@ public class Client {
 
             out.println("update_album," + album + "," + usersToSend + ",{" + filesToSend + "}");
             String response = in.readLine();
-            System.out.println(response); // DEBUG
+            System.out.println(response);
+
+            out.println("session_leave," + User);
+            String leaveResponse = in.readLine();
+            System.out.println(leaveResponse);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -478,7 +488,7 @@ public class Client {
         do{
             System.out.println("Enter album name (or enter to leave):");
             album_name = reader.readLine();
-            out.println("check_user," + album_name );
+            out.println("check_user," + album_name);
             command = in.readLine();
             if (!command.equals("OK")){
                 System.out.println("You are not in the album. Please try again.");

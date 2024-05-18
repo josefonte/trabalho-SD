@@ -1,5 +1,5 @@
 -module(login_manager).
--export([start/0,loop/1, isUserOnline/2]).
+-export([start/0,loop/1,isUserOnline/2]).
 
 
 start()-> register(?MODULE,spawn(fun() -> loop(#{}) end)).

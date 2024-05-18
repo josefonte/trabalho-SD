@@ -23,33 +23,15 @@ remove_file(Album,Name) -> rpc({remove_file,Album,Name}).
 
 rate_file(Album,Name,Rate) -> rpc({rate_file,Album,Name,Rate}).
 
-% loop through the files that exist and verify if they are in the new list
-                    % if they are check if the ratings for that user exist and if they do update them
-                    % if the file is not on the new list remove it from the map
-                    % the files that are on the new list but not on the old list are added to the map
-add_files(OldFiles, Files, User) ->
+
+
+add_files(OldFiles, Files) ->
     NewFiles = maps:fold(
         fun(Name, Ratings, Acc) ->
             case maps:find(Name, Files) of
-                {ok, UserRating} ->
-                    % File exists in the new list
-                    case maps:find(User, Ratings) of
-                        {ok, _} ->
-                            maps:put(Name, Ratings, Acc);
-                        error ->
-                            case UserRating of
-                                "null" ->
-                                    maps:put(Name, Ratings, Acc);
-                                _ ->
-                                    case string:to_integer(UserRating) of
-                                        {error, _} ->
-                                            maps:put(Name, Ratings, Acc);
-                                        {UserRatingInt, _} ->
-                                            NewRatings = maps:put(User, UserRatingInt, Ratings),
-                                            maps:put(Name, NewRatings, Acc)
-                                    end
-                            end
-                    end;
+                {ok, NewRatings} ->
+                    MergedRatings = maps:merge(Ratings,NewRatings),
+                    maps:put(Name, MergedRatings, Acc);   
                 error ->
                     Acc
             end
@@ -58,19 +40,10 @@ add_files(OldFiles, Files, User) ->
         OldFiles
     ),
     maps:fold(
-        fun(Name, Rating, Acc) ->
+        fun(Name, Ratings, Acc) ->
             case maps:find(Name, OldFiles) of
                 error ->
-                    case Rating of
-                        "null" ->
-                            maps:put(Name,#{}, Acc);
-                        _ ->
-                            case string:to_integer(Rating) of
-                                {error, _} ->
-                                    maps:put(Name,#{}, Acc);
-                                {RatingInt, _} -> maps:put(Name,#{User=>RatingInt}, Acc)
-                            end
-                    end;
+                    maps:put(Name, Ratings, Acc);
                 _ ->
                     Acc  
             end        
@@ -79,9 +52,6 @@ add_files(OldFiles, Files, User) ->
         Files
     ).
 
-
-
-%processo servidor
 loop(Map) ->
     receive
         {{create_album,Album},From} ->
@@ -194,15 +164,16 @@ loop(Map) ->
                     end
             end;
 
-        {{update_album, Album, Files, User}, From} ->
+        {{update_album, Album, AllFiles}, From} ->
             case maps:find(Album, Map) of
                 error ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map);
                 {ok, OldFiles} ->
-                    io:format("OldFiles: ~p~n", [OldFiles]),
-                    NewFiles = add_files(OldFiles, Files, User),
-                    io:format("NewFiles: ~p~n", [NewFiles]),
+                    io:format("file_manager: OldFiles: ~p~n", [OldFiles]),
+                    io:format("file_manager: AllFiles: ~p~n", [AllFiles]),
+                    NewFiles = add_files(OldFiles, AllFiles),
+                    io:format("file_manager: NewFiles: ~p~n", [NewFiles]),
                     NewMap = maps:put(Album, NewFiles, Map),
                     From ! {ok, ?MODULE},
                     loop(NewMap)
