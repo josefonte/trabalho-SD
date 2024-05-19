@@ -59,45 +59,47 @@ update_file(OldFiles, File, Rating, User) ->
 loop(Users, Albums) ->
     receive
         {Request, From} ->
-            {Msg, UsersNextState, AlbumsNextState} = handle(Request, From, Users, Albums),
+            spawn(fun() -> handle(Request, From, Users, Albums) end),
+            loop(Users, Albums);
+        {Msg,UsersNextState,AlbumsNextState,From} ->
             From ! {Msg, ?MODULE},
             loop(UsersNextState, AlbumsNextState)
     end.
 
-handle({session_join, User}, _, Users, Albums) ->
+handle({session_join, User}, Pid, Users, Albums) ->
     case lists:member(User, Users) of
         false ->
-            {ok, [User | Users], Albums};
+            ?MODULE ! {ok, [User | Users], Albums,Pid};
         true ->
-            {user_exists, Users, Albums}
+            ?MODULE ! {user_exists, Users, Albums,Pid}
     end;
 
-handle({session_leave, User}, _, Users, Albums) ->
+handle({session_leave, User}, Pid, Users, Albums) ->
     case lists:member(User, Users) of
         true ->
             List = lists:delete(User, Users),
             io:format("session_manager: UsersOnSession: ~p~n", [List]),
-            {ok, List, Albums};
+            ?MODULE ! {ok, List, Albums,Pid};
             % {ok, lists:delete(User, Users), Albums};
         false ->
-            {user_not_found, Users, Albums}
+            ?MODULE ! {user_not_found, Users, Albums,Pid}
     end;
 
-handle({is_last_user, User}, _, Users, Albums) ->
+handle({is_last_user, User}, Pid, Users, Albums) ->
     io:format("session_manager: UsersOnSession: ~p~n", [Users]),
     case length(Users) of
         1 ->
             case lists:member(User, Users) of
                 true ->
-                    {ok, Users, Albums};
+                    ?MODULE ! {ok, Users, Albums,Pid};
                 false ->
-                    {user_not_last, Users, Albums}
+                    ?MODULE ! {user_not_last, Users, Albums,Pid}
             end;
         _ ->
-            {user_not_last, Users, Albums}
+            ?MODULE ! {user_not_last, Users, Albums,Pid}
     end;
 
-handle({update_ratings, User, Album, Files}, _, Users, Albums) ->
+handle({update_ratings, User, Album, Files}, Pid, Users, Albums) ->
     case lists:member(User, Users) of
         true ->
             case maps:find(Album, Albums) of
@@ -106,18 +108,18 @@ handle({update_ratings, User, Album, Files}, _, Users, Albums) ->
                     NewFiles = add_files(OldFiles, Files, User),
                     io:format("session_manager: NewFiles: ~p~n", [NewFiles]),
                     NewAlbum = maps:put(Album, NewFiles, Albums),
-                    {ok, Users, NewAlbum};
+                    ?MODULE ! {ok, Users, NewAlbum,Pid};
                 error ->
                     NewFiles = add_files(#{}, Files, User),
                     io:format("session_manager: NewAlbum: ~p~n", [NewFiles]),
                     NewAlbum = maps:put(Album, NewFiles, Albums),
-                    {ok, Users, NewAlbum}
+                    ?MODULE ! {ok, Users, NewAlbum,Pid}
             end;
         false ->
-            {user_not_found, Users, Albums}
+            ?MODULE ! {user_not_found, Users, Albums,Pid}
     end;
 
-handle({update_and_get_all_files, User, Album, Files}, _, Users, Albums) ->
+handle({update_and_get_all_files, User, Album, Files}, Pid, Users, Albums) ->
     case lists:member(User, Users) of
         true ->
             case maps:find(Album, Albums) of
@@ -126,15 +128,15 @@ handle({update_and_get_all_files, User, Album, Files}, _, Users, Albums) ->
                     NewFiles = add_files(OldFiles, Files, User),
                     io:format("session_manager: NewFiles: ~p~n", [NewFiles]),
                     NewAlbum = maps:put(Album, NewFiles, Albums),
-                    {{ok, NewFiles}, Users, NewAlbum};
+                    ?MODULE ! {{ok, NewFiles}, Users, NewAlbum,Pid};
                 error ->
                     NewFiles = add_files(#{}, Files, User),
                     io:format("session_manager: NewAlbum: ~p~n", [NewFiles]),
                     NewAlbum = maps:put(Album, NewFiles, Albums),
-                    {{ok, NewFiles}, Users, NewAlbum}
+                    ?MODULE ! {{ok, NewFiles}, Users, NewAlbum,Pid}
             end;
         false ->
-            {user_not_found, Users, Albums}
+            ?MODULE ! {user_not_found, Users, Albums,Pid}
     end.
 
 

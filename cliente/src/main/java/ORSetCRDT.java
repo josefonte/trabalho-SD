@@ -128,7 +128,7 @@ public class ORSetCRDT {
             for (Dot dot : entry.getValue()){
                 sb.append(dot.serializeDot()).append(";");
             }
-            sb.append(".");
+            sb.append("|");
         }
         sb.append("#");
         sb.append(cc.serializeCausalContext());
@@ -154,7 +154,7 @@ public class ORSetCRDT {
         ORSetCRDT orSet = new ORSetCRDT();
         String[] contents = orSetString.split("#");
         if (contents.length>0 && !contents[0].equals("")){
-            String[] entries = contents[0].split("\\.");
+            String[] entries = contents[0].split("\\|");
             for (String entry : entries) {
                 String[] parts = entry.split("=");
                 String name = parts[0];

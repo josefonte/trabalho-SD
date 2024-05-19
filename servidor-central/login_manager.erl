@@ -8,11 +8,10 @@ start()-> register(?MODULE,spawn(fun() -> loop(#{}) end)).
 loop(Users) ->
     receive
         {Request, From} ->
-            {Msg, UsersNextState} = handle(Request, From, Users),
+            spawn(fun() -> handle(Request, From, Users) end),
+            loop(Users);
+        {Msg,UsersNextState,From} ->
             From ! {Msg, ?MODULE},
-
-            % io:format("Users: ~p~n~n", [UsersNextState]),
-
             loop(UsersNextState)
     end.
 
@@ -20,58 +19,58 @@ handle({create_account, Username, Passwd}, Pid, Users) ->
     case maps:find(Username, Users) of
         error ->
             HashedPasswd = crypto:hash(sha256, Passwd),
-            {ok, maps:put(Username, {Pid, HashedPasswd, true}, Users)};
+            ?MODULE ! {ok, maps:put(Username, {Pid, HashedPasswd, true}, Users),Pid};
         _ ->
-            {user_exists, Users}
+            ?MODULE ! {user_exists, Users,Pid}
     end;
 
-handle({close_account, Username, Passwd}, _, Users) ->
+handle({close_account, Username, Passwd}, Pid, Users) ->
     case maps:find(Username, Users) of
         {ok, {_, StoredHash, _}} ->
             HashedPasswd = crypto:hash(sha256, Passwd),
             case StoredHash == HashedPasswd of
                 true ->
-                    {ok, maps:remove(Username, Users)};
+                    ?MODULE ! {ok, maps:remove(Username, Users),Pid};
                 false ->
-                    {invalid, Users}
+                    ?MODULE ! {invalid, Users,pid}
             end;
         _ ->
-            {invalid, Users}
+            ?MODULE ! {invalid, Users,Pid}
     end;
 
-handle({login, Username, Passwd}, _, Users) ->
+handle({login, Username, Passwd}, Pid, Users) ->
     case maps:find(Username, Users) of
-        {ok, {Pid, StoredHash, false}} ->
+        {ok, {OldPid, StoredHash, false}} ->
             HashedPasswd = crypto:hash(sha256, Passwd),
             case StoredHash == HashedPasswd of
                 true ->
-                    {ok, maps:update(Username, {Pid, HashedPasswd, true}, Users)};
+                    ?MODULE ! {ok, maps:update(Username, {OldPid, HashedPasswd, true}, Users),Pid};
                 false ->
-                    {invalid, Users}
+                    ?MODULE ! {invalid, Users,Pid}
             end;
         _ ->
-            {invalid, Users}
+            ?MODULE ! {invalid, Users,Pid}
     end;
 
-handle({logout, Username}, _, Users) ->
+handle({logout, Username}, Pid, Users) ->
     case maps:find(Username, Users) of
-        {ok, {Pid, Passwd, true}} ->
-            {ok, maps:update(Username, {Pid, Passwd, false}, Users)};
+        {ok, {OldPid, Passwd, true}} ->
+            ?MODULE ! {ok, maps:update(Username, {OldPid, Passwd, false}, Users),Pid};
         _ ->
-            {invalid, Users}
+            ?MODULE ! {invalid, Users,Pid}
     end;
 
-handle(online, _, Users) ->
+handle(online, Pid, Users) ->
     OnlineUsers = maps:filter(fun(_, {_, _, true}) -> true; (_, _) -> false end, Users),
     OnlineUsernames = maps:keys(OnlineUsers),
-    {OnlineUsernames, Users};
+    ?MODULE ! {OnlineUsernames, Users,Pid};
 
-handle({verify_user, Username}, _, Users) ->
+handle({verify_user, Username}, Pid, Users) ->
     case maps:find(Username, Users) of
         {ok, _} ->
-            {ok, Users};
+            ?MODULE ! {ok, Users,Pid};
         _ ->
-            {invalid, Users}
+            ?MODULE ! {invalid, Users,Pid}
     end.
 
 

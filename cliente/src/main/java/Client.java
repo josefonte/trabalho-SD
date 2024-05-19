@@ -118,7 +118,7 @@ public class Client {
             System.out.println("Registration successful.");
             return 0;
         } else {
-            System.out.println("Registration failed. Please try again." + response);
+            System.out.println("Registration failed. Please try again. " + response);
             return 1;
         }
     }
@@ -199,7 +199,7 @@ public class Client {
             System.out.println("Logged out successfully.");
             return 0;
         } else {
-            System.out.println("Logout failed. Please try again."+ response);
+            System.out.println("Logout failed. Please try again. "+ response);
             return 1;
         }
     }
@@ -212,7 +212,7 @@ public class Client {
         if (response.equals("Album created")) {
             System.out.println("Album created successfully.");
         } else {
-            System.out.println("Album creation failed. Please try again."+ response);
+            System.out.println("Album creation failed. Please try again. "+ response);
         }
         return 0;
     }
@@ -399,7 +399,7 @@ public class Client {
                         }
                     }
                 } catch (Exception e) {
-
+                    System.out.println("Leaving chat...");
                     subscriber.close();
                     return;
                 }
@@ -424,7 +424,7 @@ public class Client {
                     if (command.startsWith("\\add_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
-                        fileUpload("localhost", 8000, file_name);
+                        fileUpload("localhost", 8000, album,file_name);
                         // message = "add_file," + album + "," + file_name;
                         crdt_name = "files";
                         ficheiros.add(file_name,pid_string);
@@ -432,7 +432,7 @@ public class Client {
                     } else if (command.startsWith("\\remove_file")) {
                         String[] parts = command.split(" ");
                         String file_name = parts[1];
-                        removeFile("localhost", 8000, file_name);
+                        removeFile("localhost", 8000,album, file_name);
                         // message = "remove_file," + album + "," + file_name;
                         crdt_name = "files";
                         ficheiros.remove(file_name,pid_string);
@@ -559,14 +559,26 @@ public class Client {
     private static int request_album_content() throws IOException {
 
         String album_name;
+        String response;
         System.out.println("Enter album name (or enter to leave):");
         album_name = reader.readLine();
+        if (album_name.equals("")){
+            return 1;
+        }
+        out.println("get_files," + album_name);
+        response = in.readLine();
+        if (response.equals("You must be a user of the album to get its content")){
+            System.out.println("You are not in the album. Please try again.");
+            request_album_content();
+            return 1;
+        }
 
-
-        out.println("get_files,"+album_name);
-        String response = in.readLine();
         response = response.substring(2, response.length() - 1);
         String[] files = response.split(",");
+        if (files.length == 0) {
+            System.out.println("No files in the album.");
+            return 1;
+        }
         for (String file : files) {
             if (file.isEmpty()) {
                 continue;
@@ -720,7 +732,7 @@ public class Client {
                     } else {
                         byte[] chunk = Arrays.copyOf(buffer, bytesRead);
                         emitter.onNext(UploadFileRequestTransfer.newBuilder()
-                                .setFileName(file.getName())
+                                .setFileName(albumName+"_"+fileName)
                                 .setFileData(ByteString.copyFrom(chunk))
                                 .build()); // Emit next chunk
                     }
