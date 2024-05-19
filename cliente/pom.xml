@@ -20,6 +20,11 @@
 </properties>
 <dependencies>
     <dependency>
+        <groupId>org.zeromq</groupId>
+        <artifactId>jeromq</artifactId>
+        <version>0.5.2</version> <!-- Or the latest version -->
+    </dependency>
+    <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty</artifactId>
         <version>${grpc.version}</version>

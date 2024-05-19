@@ -153,7 +153,7 @@ public class ORSetCRDT {
     public static ORSetCRDT deserialize(String orSetString){
         ORSetCRDT orSet = new ORSetCRDT();
         String[] contents = orSetString.split("#");
-        if (!contents[0].equals("")){
+        if (contents.length>0 && !contents[0].equals("")){
             String[] entries = contents[0].split("\\.");
             for (String entry : entries) {
                 String[] parts = entry.split("=");

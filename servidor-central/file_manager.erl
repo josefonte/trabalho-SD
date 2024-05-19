@@ -73,6 +73,21 @@ loop(Map) ->
                     From ! {album_not_found, ?MODULE},
                     loop(Map)
             end;
+        {{check_file,Album,Name},From} ->
+            case maps:find(Album,Map) of
+                {ok,Files} ->
+                    case maps:find(Name,Files) of
+                        {ok,_} ->
+                            From ! {ok, ?MODULE},
+                            loop(Map);
+                        _ ->
+                            From ! {file_not_found, ?MODULE},
+                            loop(Map)
+                    end;
+                _ ->
+                    From ! {album_not_found, ?MODULE},
+                    loop(Map)
+            end;
 
         {{get_files,Album},From} ->
             case maps:find(Album,Map) of

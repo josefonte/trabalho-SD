@@ -185,6 +185,23 @@ userAuth(Socket,User) ->
                             gen_tcp:send(Socket,"OK\n")
                     end,
                     userAuth(Socket,User);
+                
+                ["check_file",Album,File] ->
+                    case verifyUser(Album,User) of
+                        false ->
+                            gen_tcp:send(Socket, "You must be a user of the album to download a file from it\n");
+                        true ->
+                            file_manager ! {{check_file, Album, File}, self()},
+                            receive
+                                {ok, _} ->
+                                    gen_tcp:send(Socket, "OK\n");
+                                {file_not_found, _} ->
+                                    gen_tcp:send(Socket, "File not found\n");
+                                {album_not_found, _} ->
+                                    gen_tcp:send(Socket, "Album not found\n")
+                            end
+                    end,
+                    userAuth(Socket,User); 
 
                 ["get_files", Album] ->
                     case verifyUser(Album,User) of

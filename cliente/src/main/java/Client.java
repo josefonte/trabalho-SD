@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import node.proto.Rx3DataServerNodeGrpc;
 
+
+
+
 import node.proto.UploadFileRequest;
 import node.proto.UploadFileResponse;
 import node.proto.UploadFileRequestTransfer;
@@ -44,6 +47,10 @@ public class Client {
     private static  String  filesPath = "./src/main/files/";
     private static String  downloadsPath = "./src/main/client_downloads/";
 
+
+    private static String pid = Long.toString(ProcessHandle.current().pid());
+
+    private static long session_counter = 0;
 
 
     public static void main(String[] args) throws IOException {
@@ -242,10 +249,10 @@ public class Client {
                 VersionVector vv = pending_vv.get(i);
                 if (canBeDelivered(id,selfVV,vv)){
                     selfVV.put(id,selfVV.getOrDefault(id,0)+1);
-                    System.out.println("Received: " + message);
                     pending_messages.remove(i);
                     pending_pids.remove(i);
                     pending_vv.remove(i);
+                    System.out.println("Received: " + message);
                     flag = true;
                     break;
                 }
@@ -292,13 +299,20 @@ public class Client {
 
 
     private static void chat(String album) {
+        session_counter++;
         try (ZContext context = new ZContext()) {
-            // falta garantir entrega causal no serviço de chat dentro de cada grupo de edição
+
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             ZMQ.Socket publisher = context.createSocket(SocketType.PUB);
 
-            long pid = ProcessHandle.current().pid();
-            String pid_string = Long.toString(pid);
+            subscriber.connect("tcp://localhost:" + 5556);
+            subscriber.subscribe(album.getBytes());
+
+            publisher.connect("tcp://localhost:" + 5555);
+
+
+            String pid_string = pid + session_counter;
+            long pid = Long.parseLong(pid_string);
 
             // estado do chat
             ReentrantLock vvlock = new ReentrantLock();
@@ -352,13 +366,11 @@ public class Client {
             System.out.println("Files: " + ficheiros.elements());
             System.out.println("Users: " + utilizadores.elements());
 
-            subscriber.connect("tcp://localhost:" + 5556);
-            subscriber.subscribe(album.getBytes());
 
-            publisher.connect("tcp://localhost:" + 5555);
 
             // Start a thread to handle incoming messages
             new Thread(() -> {
+
                 try{
                     ArrayList<VersionVector> pending_vv = new ArrayList<>();
                     ArrayList<Long> pending_pids = new ArrayList<>();
@@ -381,7 +393,6 @@ public class Client {
                                 utilizadores.join(utilizadores_m);
                             }
                             else if (parts[3].equals("files")){
-                                System.out.println("Received: " + parts);
                                 ORSetCRDT ficheiros_m = ORSetCRDT.deserialize(parts[4]);
                                 ficheiros.join(ficheiros_m);
                             }
@@ -389,6 +400,8 @@ public class Client {
                     }
                 } catch (Exception e) {
 
+                    subscriber.close();
+                    return;
                 }
             }).start();
 
@@ -465,9 +478,6 @@ public class Client {
                     }
                     String new_message = String.format("%s:command:%s:%s:%s", album, pid, crdt_name,crdt);
                     publisher.send(new_message.getBytes());
-//                    out.println(message);
-//                    String response = in.readLine();
-//                    System.out.println(response); // DEBUG
 
                 }
                 command = reader.readLine();
@@ -487,10 +497,14 @@ public class Client {
             String response = in.readLine();
             System.out.println(response);
 
+            String new_message = String.format("%s:command:%s:%s:%s", album, pid, "users",utilizadores.serialize());
+            publisher.send(new_message.getBytes());
+            new_message = String.format("%s:command:%s:%s:%s", album, pid, "files",ficheiros.serialize());
+            publisher.send(new_message.getBytes());
             out.println("session_leave," + User);
             String leaveResponse = in.readLine();
             System.out.println(leaveResponse);
-
+            publisher.close();
         }
         catch (Exception e) {
             System.out.println("Leaving session...");
@@ -551,19 +565,43 @@ public class Client {
 
         out.println("get_files,"+album_name);
         String response = in.readLine();
-        //TODO - falta tratar a resposta
-        System.out.println(response);
+        response = response.substring(2, response.length() - 1);
+        String[] files = response.split(",");
+        for (String file : files) {
+            if (file.isEmpty()) {
+                continue;
+            }
+            String[] parts = file.split(" => ");
+            String file_name = parts[0].trim();
+            String file_rating = parts[1].trim();
+            file_name = file_name.substring(1, file_name.length() - 1);
+            System.out.println("File: " + file_name + " | Rating: " + file_rating);
+        }
         return 1;
     }
 
     private static int request_file_data() throws IOException {
-        String album_name;
-        System.out.println("Enter album name (or enter to leave):");
-        album_name = reader.readLine();
-        System.out.println("Enter file name:");
-        String file_name = reader.readLine();
-        //verificar se o utlizador tem permissoes, album e ficheiro existem
-        downloadFile("localhost", 8000, file_name);
+
+        String album_name,file_name,command;
+
+        do{
+            System.out.println("Enter album name (or enter to leave):");
+            album_name = reader.readLine();
+            if (album_name.equals("")){
+                return 1;
+            }
+            System.out.println("Enter file name:");
+            file_name = reader.readLine();
+            out.println("check_file," + album_name + "," + file_name);
+            command = in.readLine();
+            if (!command.equals("OK")){
+                System.out.println(command + ". Please try again.");
+            }
+
+        } while(!command.equals("OK"));
+
+
+        downloadFile("localhost", 8000, album_name,file_name);
 
         return 1;
     }
@@ -577,12 +615,12 @@ public class Client {
         return channel;
     }
 
-    private static void downloadFile(String ip_add,int port, String fileName) {
+    private static void downloadFile(String ip_add,int port,String albumName, String fileName) {
         ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
 
         Rx3DataServerNodeGrpc.RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
 
-        Single<DownloadFileRequest> req = Single.just(DownloadFileRequest.newBuilder().setFileName(fileName).build());
+        Single<DownloadFileRequest> req = Single.just(DownloadFileRequest.newBuilder().setFileName(albumName+"_"+fileName).build());
 
         AtomicLong totalFileSize = new AtomicLong(0);
         AtomicBoolean isFirstChunk = new AtomicBoolean(true);
@@ -599,10 +637,10 @@ public class Client {
                     .onBackpressureBuffer()
                     .doOnNext(chunk -> {
                         if (isFirstChunk.get()) {
-                            System.out.println("#### File Download started -> " + chunk.getFileName());
+                            System.out.println("#### File Download started -> " + fileName);
 
                             try {
-                                File newFile = new File(downloadsPath + chunk.getFileName());
+                                File newFile = new File(downloadsPath + fileName);
                                 file.set(newFile);
                                 fileOutputStream.set(new FileOutputStream(String.valueOf(file)));
 
@@ -641,11 +679,11 @@ public class Client {
                     .blockingSubscribe();
         }
         else {
-            System.out.println("Error downloading file: " + response.getFileName());
+            System.out.println("Error downloading file: " + fileName);
             if(!response.getNodeIp().isEmpty() && !response.getNodePort().isEmpty()){
                 System.out.println("Error: " + response.getErrorMessage() + " | search in " + response.getNodeIp() + ":" + response.getNodePort());
                 channel.shutdown();
-                downloadFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+                downloadFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), albumName,fileName);
             }
         }
 
@@ -663,11 +701,11 @@ public class Client {
         }
     }
 
-    private static void fileUpload(String ip_add,int port, String fileName) throws IOException {
+    private static void fileUpload(String ip_add,int port, String albumName, String fileName) throws IOException {
         ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
         Rx3DataServerNodeGrpc.RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
 
-        UploadFileRequest req = UploadFileRequest.newBuilder().setFileName(fileName).build();
+        UploadFileRequest req = UploadFileRequest.newBuilder().setFileName(albumName+"_"+fileName).build();
         UploadFileResponse auth = stub.uploadFile(req).blockingGet();
 
         if(auth.getSuccess()){
@@ -687,7 +725,7 @@ public class Client {
                                 .build()); // Emit next chunk
                     }
                 });
-                System.out.println("### Starting file transfer -> " + file.getName() );
+                System.out.println("### Starting file transfer -> " + fileName );
                 stub.uploadFileTransfer(requestFlowable).onErrorComplete(
                                 throwable -> {
                                     System.err.println("Error uploading file: " + throwable.getMessage());
@@ -698,24 +736,24 @@ public class Client {
                             System.out.println("File Transfered: " + response.getSuccess() );
                         });}}
         else {
-            System.out.println("Error uploading file: " + auth.getFileName());
+            System.out.println("Error uploading file: " + fileName);
             if(!auth.getNodeIp().isEmpty() && !auth.getNodePort().isEmpty()){
                 System.out.println("Error: " + auth.getErrorMessage() + " | search in " + auth.getNodeIp() + ":" + auth.getNodePort());
                 channel.shutdown();
-                fileUpload(auth.getNodeIp(), Integer.parseInt(auth.getNodePort()), fileName);
+                fileUpload(auth.getNodeIp(), Integer.parseInt(auth.getNodePort()),albumName, fileName);
             }
         }
 
         channel.shutdown();
     }
 
-    private static void removeFile(String ip_add,int port, String fileName) {
+    private static void removeFile(String ip_add,int port, String albumName, String fileName) {
 
         ManagedChannel channel = createChannel(ip_add, String.valueOf(port));
         Rx3DataServerNodeGrpc.RxDataServerNodeStub stub = Rx3DataServerNodeGrpc.newRxStub(channel);
 
         System.out.println("Sending remove request");
-        Single<RemoveRequest> req = Single.just(RemoveRequest.newBuilder().setFileName(fileName).build());
+        Single<RemoveRequest> req = Single.just(RemoveRequest.newBuilder().setFileName(albumName +"_"+fileName).build());
         RemoveResponse response = stub.removeFile(req).blockingGet();
 
         if (response.getSuccess()) {
@@ -726,7 +764,7 @@ public class Client {
             if(!response.getNodeIp().isEmpty() && !response.getNodePort().isEmpty()){
                 System.out.println("Search in " + response.getNodeIp() + ":" + response.getNodePort());
                 channel.shutdown();
-                removeFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), fileName);
+                removeFile(response.getNodeIp(), Integer.parseInt(response.getNodePort()), albumName,fileName);
             }
         }
         channel.shutdown();

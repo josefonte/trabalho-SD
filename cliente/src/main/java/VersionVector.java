@@ -5,8 +5,6 @@ public class VersionVector extends HashMap<Long, Integer> {
 
     public boolean firstMessage = true;
 
-    private ReentrantLock lock = new ReentrantLock();
-
     public VersionVector lastDependency = null;
 
     public VersionVector lastReceived = null;
@@ -46,7 +44,7 @@ public class VersionVector extends HashMap<Long, Integer> {
         }
         lastDependency = new VersionVector(this);
         lastReceived = null;
-        System.out.println("Sending: " + sb.toString());
+        //System.out.println("Sending: " + sb.toString());
         return sb.toString();
     }
 
