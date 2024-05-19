@@ -434,7 +434,7 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
             byte[] file_key = hash.generateHash(file_name);
 
             VirtualNode<NodeState> storedNode = lookupClosestNode(file_key);
-            if (storedNode.isVirtualNodeOf(nodeState)){
+            if (storedNode.isVirtualNodeOf(nodeState) && nodeState.getStorage().containsKey(file_key)){
                System.out.println("#### File removed -> " + file_name );
                nodeState.removeStorage(file_key);
                return RemoveResponse.newBuilder()
@@ -444,12 +444,20 @@ public class NodeServer extends Rx3DataServerNodeGrpc.DataServerNodeImplBase {
                        .build();
            }
               else {
-                System.out.println("#### Remove File -> Incorrect Node ");
-                 return RemoveResponse.newBuilder()
-                         .setSuccess(false)
-                         .setNodeIp(storedNode.getPhysicalNode().getIpAddress())
-                         .setNodePort(storedNode.getPhysicalNode().getIpPort())
-                         .build();
+                  if (storedNode.isVirtualNodeOf(nodeState)) {
+                        System.out.println("#### Remove File -> File not found in storage");
+                        return RemoveResponse.newBuilder()
+                                .setSuccess(false)
+                                .build();
+                  }else {
+                      System.out.println("#### Remove File -> Incorrect Node");
+                      return RemoveResponse.newBuilder()
+                              .setSuccess(false)
+                              .setNodeIp(storedNode.getPhysicalNode().getIpAddress())
+                              .setNodePort(storedNode.getPhysicalNode().getIpPort())
+                              .build();
+                  }
+
               }
 
 
